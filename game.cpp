@@ -2,27 +2,21 @@
 #include <iterator>
 #include "game.h"
 
-Game::Game( std::istream & is, int speed, int fps) {
-
-	speed_ = speed;
-	fps_ = fps;
+Game::Game( std::istream & is, NUM speed, NUM fps) : speed_(speed), fps_(fps) {
 	is >> *this;
-
-	//plane = Blob2d<int>
 }
 
-Game::Game(int speed, int fps) {
-
-	speed_ = speed;
-	fps_ = fps;
+Game::Game(NUM speed, NUM fps) : speed_(speed), fps_(fps) {
 	for(int i=40; i<400; i+=50) {
-		blobs_.push_back( Blob2d<int>( i*2, i, 16 ) );
+		blobs_.push_back( Blob2d<NUM>( i*2, i, 16 ) );
 	}
 }
 
 void Game::nextStep () {
 
-	for( Blob2d<int> & b : blobs_ )
+	plane_ + (speed_/fps_);
+
+	for( auto & b : blobs_ )
 		b + ( speed_/fps_ );
 
 	for( auto it = tblobs_.begin(); it != tblobs_.end(); ++it )
@@ -38,12 +32,17 @@ int Game::collisions () {
 
 	int collisions = 0;
 
-	for( const Blob2d<int> & b : blobs_ )
-		for( const Blob2d_fix<int> & fb: fblobs_)
+	for( const auto & b : blobs_ ) {
+		if( plane_.distance(b) < 0 ) {
+			++collisions;
+			tblobs_.push_back( Blob2d_temp<NUM>(plane_) );
+		}
+		for( const auto & fb: fblobs_)
 			if( b.distance(fb) < 0 ) {
 				++collisions;
-				tblobs_.push_back( Blob2d_temp<int>(b) );
+				tblobs_.push_back( Blob2d_temp<NUM>(b) );
 			}
+	}
 
 	return collisions;
 }
@@ -73,11 +72,11 @@ std::istream & operator>>( std::istream & is, Game & g) {
 		is >> c;
 		if( ! is.eof() ) {
 			if(c == 'f')
-				g.fblobs_.push_back( Blob2d_fix<int>( is ) );
+				g.fblobs_.push_back( Blob2d_fix<NUM>( is ) );
 			else if(c == 'm')
-				g.blobs_.push_back( Blob2d<int>( is ) );
+				g.blobs_.push_back( Blob2d<NUM>( is ) );
 			else if(c == 't')
-				g.tblobs_.push_back( Blob2d_temp<int>( is ) );
+				g.tblobs_.push_back( Blob2d_temp<NUM>( is ) );
 			else
 				throw "operator>>( istream &, Game & ) failed: unknown blob type";
 		}

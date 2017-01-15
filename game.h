@@ -7,30 +7,37 @@
 #include "blob2d.h"
 #include "blob2d_temp.h"
 
+typedef double NUM;
+
 class Game {
 
 	private:
-	Blob2d<int> plane_;
-	std::vector< Blob2d_fix<int> > fblobs_;
-	std::vector< Blob2d<int> > blobs_;
-	std::vector< Blob2d_temp<int> > tblobs_;
-	int fps_;
-	int speed_;
+	NUM speed_;
+	NUM fps_;
+	Blob2d<NUM> plane_{600, 0, 80, 0, 0, 20, -20, -7, -30};
+	std::vector< Blob2d_fix<NUM> > fblobs_;
+	std::vector< Blob2d<NUM> > blobs_;
+	std::vector< Blob2d_temp<NUM> > tblobs_;
+
 	void nextStep();
 
 	public:
-	Game( std::istream &, int speed = 60, int fps = 60 );
-	Game( int speed = 60, int fps = 60 );
+
+	Game( std::istream &, NUM speed = 60, NUM fps = 60 );
+	Game( NUM speed = 60, NUM fps = 60 );
 	~Game() {};
 
 	void operator++() { nextStep(); }
 	int collisions();
 
-	const std::vector< Blob2d<int> > & blobs() const { return blobs_; }
-	const std::vector< Blob2d_fix<int> > & fblobs() const { return fblobs_; }
-	const std::vector< Blob2d_temp<int> > & tblobs() const { return tblobs_;}
+	const std::vector< Blob2d<NUM> > & blobs() const { return blobs_; }
+	const std::vector< Blob2d_fix<NUM> > & fblobs() const { return fblobs_; }
+	const std::vector< Blob2d_temp<NUM> > & tblobs() const { return tblobs_;}
 
-	Blob2d<int> & blob( int n ) { return blobs_[n]; }
+	Blob2d<NUM> & blob( int n ) { return blobs_[n]; }
+
+	const Blob2d<NUM> & plane() const { return plane_; }
+	Blob2d<NUM> & nonConstPlane() { return plane_; }
 
 	friend istream & operator>>(istream &, Game &);
 };

@@ -1,4 +1,4 @@
-LIBS=-lSDL2
+LIBS=-lSDL2 -lSDL2_image
 BUILDDIR=build
 CFLAGS=-MMD -MP -c -std=gnu++14 -Wall -Wextra -Wpedantic
 

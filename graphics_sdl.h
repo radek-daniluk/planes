@@ -15,6 +15,14 @@ class GraphicsSdl {
 	SDL_DisplayMode dm;
 	SDL_DisplayMode desktopDm;
 
+	SDL_Texture* plane;
+	SDL_Texture* plane_r;
+	SDL_Texture* plane_l;
+
+	SDL_Texture* tree;
+
+	SDL_Texture* loadTexture( std::string );
+
 	float loopDelay;
 
 	public:

@@ -31,7 +31,7 @@ Application::~Application() {
 
 int Application::startMainLoop ( void ) {
 
-	if( loadGame("test/1.game") ) {
+	if( loadGame("test/2.game") ) {
 		std::cout << "Game loading error. Exiting" << std::endl;
 		return 2;
 	}
