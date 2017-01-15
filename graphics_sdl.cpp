@@ -33,22 +33,34 @@ GraphicsSdl::GraphicsSdl(){//bool fullscreen, int width, int height) {
 			(std::string) IMG_GetError();
 
 	// Load images to Textures
-	plane = loadTexture ("img/mig29.png");
-	plane_r = loadTexture ("img/mig29_right.png");
-	plane_l = loadTexture ("img/mig29_left.png");
-	tree = loadTexture ("img/tree.bmp");
+	mig29 = loadTexture( "img/mig29.png" );
+	mig29_r = loadTexture( "img/mig29_right.png" );
+	mig29_l = loadTexture( "img/mig29_left.png" );
+	tree = loadTexture( "img/tree.png" );
+	f16 = loadTexture( "img/F-16.png" );
+	f35 = loadTexture( "img/F-35.png" );
+	f22 = loadTexture( "img/F-22.png" );
+	explosion = loadTexture( "img/explosion3.png" );
+
 
 	loopDelay = 1000.0/(double)dm.refresh_rate; //can be done more precisely
 }
 
 GraphicsSdl::~GraphicsSdl() {
 
-	SDL_DestroyTexture( plane );
-	SDL_DestroyTexture( plane_r );
-	SDL_DestroyTexture( plane_l );
-	plane = plane_r = plane_l = NULL;
+	SDL_DestroyTexture( mig29 );
+	SDL_DestroyTexture( mig29_r );
+	SDL_DestroyTexture( mig29_l );
+	mig29 = mig29_r = mig29_l = NULL;
 
+	SDL_DestroyTexture( f16 );
+	SDL_DestroyTexture( f22 );
+	SDL_DestroyTexture( f35 );
+	f16 = f22 = f35 = NULL;
+
+	SDL_DestroyTexture( explosion );
 	SDL_DestroyTexture( tree );
+	explosion = tree = NULL;
 
 	SDL_DestroyRenderer( renderer );
 	SDL_DestroyWindow( window );
@@ -81,8 +93,8 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 		rect.x = b.x() - b.radius();
 		rect.y = b.y() - b.radius() + offset;
 		rect.h = rect.w = b.size();
-		SDL_SetRenderDrawColor( renderer, 0xF7, 0xE4, 0x31, 0xFF );
-		SDL_RenderFillRect( renderer , &rect );
+		//SDL_SetRenderDrawColor( renderer, 0xF7, 0xE4, 0x31, 0xFF );
+		SDL_RenderCopy( renderer, tree, NULL, &rect );
 	}
 
 	// moving blobs
@@ -90,18 +102,19 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 		rect.x = b.x() - b.radius();
 		rect.y = b.y() - b.radius() + offset;
 		rect.h = rect.w = b.size();
-		SDL_SetRenderDrawColor( renderer, 0xF7, 0xE4, 0xB8, 0xFF );
-		SDL_RenderFillRect( renderer , &rect );
+		//SDL_SetRenderDrawColor( renderer, 0xF7, 0xE4, 0xB8, 0xFF );
+		//SDL_RenderFillRect( renderer , &rect );
+		SDL_RenderCopy( renderer, f22, NULL, &rect );
 	}
 
 	//plane
 	SDL_Texture* pl;
 	if ( game.plane().speedX() == 0 )
-		pl = plane;
+		pl = mig29;
 	else if( game.plane().speedX() < 0 )
-		pl = plane_l;
+		pl = mig29_l;
 	else
-		pl = plane_r;
+		pl = mig29_r;
 
 	rect.x = game.plane().x() - 34;//game.plane().radius();
 	rect.y = game.plane().y() + offset - 50;//game.plane().radius();
@@ -115,8 +128,9 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 		rect.x = b.x() - b.radius();
 		rect.y = b.y() - b.radius() + offset;
 		rect.h = rect.w = b.size();
-		SDL_SetRenderDrawColor( renderer, 0x24, 0xE4, 0xB8, 0xFF );
-		SDL_RenderFillRect( renderer , &rect );
+		//SDL_SetRenderDrawColor( renderer, 0x24, 0xE4, 0xB8, 0xFF );
+		//SDL_RenderFillRect( renderer , &rect );
+		SDL_RenderCopy( renderer, explosion, NULL, &rect );
 	}
 
 	SDL_RenderPresent( renderer );

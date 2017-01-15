@@ -15,9 +15,15 @@ class GraphicsSdl {
 	SDL_DisplayMode dm;
 	SDL_DisplayMode desktopDm;
 
-	SDL_Texture* plane;
-	SDL_Texture* plane_r;
-	SDL_Texture* plane_l;
+	SDL_Texture* mig29;
+	SDL_Texture* mig29_r;
+	SDL_Texture* mig29_l;
+
+	SDL_Texture* f16;
+	SDL_Texture* f22;
+	SDL_Texture* f35;
+
+	SDL_Texture* explosion;
 
 	SDL_Texture* tree;
 

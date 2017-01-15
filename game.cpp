@@ -83,11 +83,9 @@ std::istream & operator>>( std::istream & is, Game & g) {
 	}
 
 	if( is.eof() )
-		std::cout << "Game loaded" << std::endl <<
-			"operator>>( istream &, Game & ) OK" << std::endl;
+		std::cout << "Game loaded" << std::endl;
 	else
-		throw "Game failed to load"; // <<
-			//"operator>>( istream &, Game & ) FAILED" << std::endl);
+		throw "Game failed to load";
 
 	return is;
 }
