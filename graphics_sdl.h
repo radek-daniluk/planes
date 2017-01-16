@@ -24,7 +24,7 @@ class GraphicsSdl {
 	SDL_Texture* f35;
 
 	SDL_Texture* explosion;
-
+	SDL_Texture* bullet;
 	SDL_Texture* tree;
 
 	SDL_Texture* loadTexture( std::string );

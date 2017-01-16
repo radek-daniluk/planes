@@ -40,7 +40,7 @@ int Application::startMainLoop ( void ) {
 
 	while( state_ ) { // state_ != quit
 		controls->eventLoop( *this, *gra );
-		++(*gra);
+		gra->nextStep();
 		if( gra->collisions() )
 			cout << "Bum bum!!!" << std::endl;
 			//state_.pause()

@@ -2,7 +2,7 @@
 // Class template representing movable, temporary circular object in 2D plane.
 // Size of the object is equal to diameter (2 x riadius).
 //
-// It is intended to be instantiated by a number type (int, float, etc. )
+// It is intended to be instantiated by a numeric type (int, float, etc. )
 
 #ifndef BLOB2D_TEMP_H
 #define BLOB2D_TEMP_H
@@ -18,7 +18,7 @@ template <typename T>
 class Blob2d_temp : public Blob2d<T> {
 
 	private:
-	int ttl_;
+	int ttl_{120}; //frame to live - TODO add external multiplicator to manage time
 	void load_blob_els( istream & );
 	void fromStream( istream & );
 
@@ -29,8 +29,8 @@ class Blob2d_temp : public Blob2d<T> {
 		T position_y,
 		T size,
 		int ttl,
-		T velocity_x = 0,
-		T velocity_y = 0
+		T velocity_x,
+		T velocity_y
 	);
 	Blob2d_temp( std::istream & is );
 	Blob2d_temp( const Blob2d<T> & );
@@ -74,12 +74,12 @@ Blob2d_temp<T>::Blob2d_temp( std::istream & is ) : Blob2d<T>( is ) {
 template <typename T>
 void Blob2d_temp<T>::load_blob_els( istream & is ) {
 	if( ! (is >> ttl_ ) )
-		throw "Loading blob2_temp elements failed";
+		throw "Loading Blob2d_temp<T> elements failed";
 }
 
 template <typename T>
 Blob2d_temp<T>::Blob2d_temp( const Blob2d<T> & b) :
-		Blob2d<T>( b ), ttl_(120)
+		Blob2d<T>( b )
 {}
 
 template <typename T>
@@ -107,7 +107,6 @@ ostream & operator<<( ostream & os, const Blob2d_temp<T> & b ) {
 // Extraction operator gets numerics from the input stream and assings its
 // value to object's varibles. It is intended to be used with  strings
 // created by << operator. Numbers should be separated only with white spaces.
-// On error it throws const char* "Operator >> failed".
 template <typename T>
 istream & operator>>( istream & is, Blob2d_temp<T> & b ) {
 

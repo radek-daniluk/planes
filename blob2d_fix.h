@@ -2,7 +2,7 @@
 // Class template representing motionless circular object placed in 2D plane.
 // Size of the object is equal to diameter (2 x riadius).
 //
-// It is intended to be instantiated by a number type (int, float, etc. )
+// It is intended to be instantiated by a numeric type (int, float, etc. )
 
 #ifndef BLOB2D_FIX_H
 #define BLOB2D_FIX_H
@@ -25,7 +25,7 @@ class Blob2d_fix {
 	T x_;
 	T y_;
 	T radius_;
-	bool active_;
+	bool active_{ false };
 
 	protected:
 	void load_blob_els( istream & );
@@ -36,7 +36,7 @@ class Blob2d_fix {
 		T position_x,
 		T position_y,
 		T size,
-		bool active = true
+		bool active
 	);
 	Blob2d_fix( std::istream & is ) { load_blob_els( is ); }
 	virtual ~Blob2d_fix() {}
@@ -105,13 +105,12 @@ ostream & operator<<( ostream & os, const Blob2d_fix<T> & b ) {
 template <typename T>
 void Blob2d_fix<T>::load_blob_els( istream & is ) {
 	if( ! ( is >> x_ >> y_ >> radius_ >> active_ ) )
-		throw "Loading Blob2_fix elements failed";
+		throw "Loading Blob2d_fix<T> elements failed";
 }
 
 // Extraction operator gets numerics from the input stream and assings its
 // value to object's varibles. It is intended to be used with  strings
 // created by << operator. Numbers should be separated only with white spaces.
-// On error it throws const char* "Operator>>( istream &, Blob2d_fix<T> &) failed".
 template <typename T>
 istream & operator>>( istream & is, Blob2d_fix<T> & b ) {
 

@@ -2,7 +2,7 @@
 // Class template representing movable circular object in 2D plane.
 // Size of the object is equal to diameter (2 x riadius).
 //
-// It is intended to be instantiated by a number type (int, float, etc. )
+// It is intended to be instantiated by a numeric type (int, float, etc. )
 
 #ifndef BLOB2D_H
 #define BLOB2D_H
@@ -20,13 +20,13 @@ class Blob2d : public Blob2d_fix<T> {
 
 	private:
 
-	T velocity_x_;
-	T velocity_y_;
+	T velocity_x_{ 0 };
+	T velocity_y_{ 0 };
 	T max_x_;
 	T min_x_;
 	T max_y_;
 	T min_y_;
-	void load_blob2_els( istream & );
+	void load_blob_els( istream & );
 	void fromStream( istream & );
 
 	public:
@@ -41,7 +41,8 @@ class Blob2d : public Blob2d_fix<T> {
 		T max_x = std::numeric_limits<T>::max(), // By default
 		T min_x = std::numeric_limits<T>::min(), // no max, min speed limits
 		T max_y = std::numeric_limits<T>::max(), // (numeric type is a limit)
-		T min_y = std::numeric_limits<T>::min()
+		T min_y = std::numeric_limits<T>::min(),
+		bool active = false
 	);
 	Blob2d( const Blob2d_fix<T> & bf ) : Blob2d_fix<T>(bf) {}
 	Blob2d( std::istream & is );
@@ -62,10 +63,7 @@ class Blob2d : public Blob2d_fix<T> {
 	void stopY() { velocity_y_ = 0; }
 	void stop() { velocity_x_ = velocity_y_ = 0; }
 
-	void operator+( T speed_multiplicator ) {      //TODO zrób porządek z operatorami
-		this->xAdd( velocity_x_*speed_multiplicator );
-		this->yAdd( velocity_y_*speed_multiplicator );
-	}
+	void step( T speed_multiplicator );
 	void operator++() { this->xAdd(velocity_x_); this->yAdd(velocity_y_); }
 
 // set methods
@@ -99,14 +97,23 @@ class Blob2d : public Blob2d_fix<T> {
 
 };
 
+// take a movement step according to current speed and multiplicator
+template <typename T>
+void Blob2d<T>::step( T speed_multiplicator ) {
+	this->xAdd( velocity_x_*speed_multiplicator );
+	this->yAdd( velocity_y_*speed_multiplicator );
+}
+
+
 template <typename T>
 Blob2d<T>::Blob2d(
 		T position_x, T position_y,
 		T size,
 		T velocity_x, T velocity_y,
 		T max_x, T min_x,
-		T max_y, T min_y ) :
-	Blob2d_fix<T>( position_x, position_y, size ),
+		T max_y, T min_y,
+		bool active ) :
+	Blob2d_fix<T>( position_x, position_y, size, active ),
 	velocity_x_(velocity_x),
 	velocity_y_(velocity_y),
 	max_x_(max_x),
@@ -117,7 +124,7 @@ Blob2d<T>::Blob2d(
 
 template <typename T>
 Blob2d<T>::Blob2d( std::istream & is ) : Blob2d_fix<T>( is ) {
-	load_blob2_els( is );
+	load_blob_els( is );
 }
 
 // method changes x and y elements of Blob's velocity
@@ -157,7 +164,7 @@ template <typename T>
 void Blob2d<T>::fromStream( istream & is ) {
 
 	Blob2d_fix<T>::load_blob_els( is );
-	load_blob2_els( is );
+	load_blob_els( is );
 
 }
 
@@ -170,11 +177,11 @@ ostream & operator<<( ostream & os, const Blob2d<T> & b ) {
 }
 
 template <typename T>
-void Blob2d<T>::load_blob2_els( istream & is ) {
+void Blob2d<T>::load_blob_els( istream & is ) {
 
 	if( ! (is >> velocity_x_ >> velocity_y_
 			>> max_x_ >> min_x_ >> max_y_ >> min_y_) )
-	throw "Loading blob2 elements failed";
+	throw "Loading Blob2d<T> elements failed";
 }
 
 // Extraction operator gets all elements from the input stream and assings its

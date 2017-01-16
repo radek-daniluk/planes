@@ -41,6 +41,7 @@ GraphicsSdl::GraphicsSdl(){//bool fullscreen, int width, int height) {
 	f35 = loadTexture( "img/F-35.png" );
 	f22 = loadTexture( "img/F-22.png" );
 	explosion = loadTexture( "img/explosion3.png" );
+	bullet = loadTexture( "img/bullet.png" );
 
 
 	loopDelay = 1000.0/(double)dm.refresh_rate; //can be done more precisely
@@ -60,7 +61,8 @@ GraphicsSdl::~GraphicsSdl() {
 
 	SDL_DestroyTexture( explosion );
 	SDL_DestroyTexture( tree );
-	explosion = tree = NULL;
+	SDL_DestroyTexture( bullet );
+	bullet = explosion = tree = NULL;
 
 	SDL_DestroyRenderer( renderer );
 	SDL_DestroyWindow( window );
@@ -105,6 +107,15 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 		//SDL_SetRenderDrawColor( renderer, 0xF7, 0xE4, 0xB8, 0xFF );
 		//SDL_RenderFillRect( renderer , &rect );
 		SDL_RenderCopy( renderer, f22, NULL, &rect );
+	}
+
+	for( const auto & b : game.bullets() ) {
+		rect.x = b.x() - b.radius();
+		rect.y = b.y() - b.radius() + offset;
+		rect.h = rect.w = b.size();
+		//SDL_SetRenderDrawColor( renderer, 0xF7, 0xE4, 0xB8, 0xFF );
+		//SDL_RenderFillRect( renderer , &rect );
+		SDL_RenderCopy( renderer, bullet, NULL, &rect );
 	}
 
 	//plane

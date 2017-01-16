@@ -62,5 +62,8 @@ void Controls::eventLoop( Application& app, Game & game ) const {
 			//p.accel(0,-1);
 	}
 
+	if( keys[ SDL_GetScancodeFromKey( SDLK_SPACE ) ] )
+		game.addBullet();
+
 }
 
