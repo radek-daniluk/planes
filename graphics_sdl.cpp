@@ -32,6 +32,11 @@ GraphicsSdl::GraphicsSdl(){//bool fullscreen, int width, int height) {
 		throw "SDL_image could not initialize! SDL_image Error: " +
 			(std::string) IMG_GetError();
 
+	SDL_RendererInfo ri;
+	SDL_GetRendererInfo( renderer, &ri);
+	cout << ri.name << " " << ri.flags << " " << ri.num_texture_formats << " "
+		<< ri.max_texture_width << " " << ri.max_texture_height << endl;
+
 	// Load images to Textures
 	mig29 = loadTexture( "img/mig29.png" );
 	mig29_r = loadTexture( "img/mig29_right.png" );

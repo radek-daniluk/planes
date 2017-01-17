@@ -15,5 +15,6 @@ class Application;
 class Controls;
 class GraphicsSdl;
 class Game;
+class TimeCount;
 
 #endif

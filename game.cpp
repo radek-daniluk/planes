@@ -36,10 +36,11 @@ void Game::nextStep () {
 		}else
 			bullets_.erase( it-- );
 
-	std::cout << *this << std::endl;
+	//std::cout << *this << std::endl;
 }
 
 void Game::updateActive() {
+
 }
 
 void Game::addBullet() {

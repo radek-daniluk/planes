@@ -16,11 +16,13 @@ class Application {
 	GraphicsSdl* graphics;
 	Controls* controls;
 
+	int debug{0};
+
 	int loadGame( std::string );
 
 	public:
 
-	Application();
+	Application( int debug );
 	~Application();
 
 	int startMainLoop ( void );

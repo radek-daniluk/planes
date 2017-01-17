@@ -34,3 +34,6 @@
 build/*
 test/*
 log*
+*.log
+*.csv
+
