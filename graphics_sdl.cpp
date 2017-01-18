@@ -21,9 +21,14 @@ GraphicsSdl::GraphicsSdl(){//bool fullscreen, int width, int height) {
 			(std::string) SDL_GetError();
 	desktopDm = dm;
 
-	if( SDL_CreateWindowAndRenderer ( dm.w, dm.h, SDL_WINDOW_FULLSCREEN_DESKTOP,
-			&window, &renderer) )
-		throw "error SDL_CreateWindowAndRenderer; SDL_GetError():" +
+	window = SDL_CreateWindow ( "gierka", 0, 0, 1000, dm.h, 0);//SDL_WINDOW_SHOWN );
+	if( window == NULL )
+		throw "error SDL_CreateWindow; SDL_GetError():" +
+			(std::string) SDL_GetError();
+
+	renderer = SDL_CreateRenderer ( window, -1, SDL_RENDERER_PRESENTVSYNC );
+	if( renderer == NULL )
+		throw "error SDL_CreateRenderer; SDL_GetError():" +
 			(std::string) SDL_GetError();
 
 	//Initialize PNG loading
@@ -31,11 +36,6 @@ GraphicsSdl::GraphicsSdl(){//bool fullscreen, int width, int height) {
 	if( !( IMG_Init( imgFlags ) & imgFlags ) )
 		throw "SDL_image could not initialize! SDL_image Error: " +
 			(std::string) IMG_GetError();
-
-	SDL_RendererInfo ri;
-	SDL_GetRendererInfo( renderer, &ri);
-	cout << ri.name << " " << ri.flags << " " << ri.num_texture_formats << " "
-		<< ri.max_texture_width << " " << ri.max_texture_height << endl;
 
 	// Load images to Textures
 	mig29 = loadTexture( "img/mig29.png" );
@@ -93,7 +93,7 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 
 	//background
 	SDL_SetRenderDrawColor( renderer, 0x5C, 0xDF, 0x46, 0xFF );
-	SDL_RenderClear( renderer );;
+	SDL_RenderClear( renderer );
 
 	// fixed blobs
 	for( const auto & b : game.fblobs() ) {

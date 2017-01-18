@@ -5,6 +5,7 @@
 #include "application.h"
 #include "controls.h"
 #include "time_count.h"
+#include "fps_count.h"
 
 using std::cerr;
 using std::cout;
@@ -44,7 +45,13 @@ int Application::startMainLoop ( void ) {
 	string sep = ",";
 	TimeCount tc[4];
 
+	FpsCount fps;
+
 	while( state_ ) { // state_ != quit
+
+		double interval = fps.interval();
+		cout << "\t\t\t\t\tfps interval: " << interval << "\tfps: "
+			<< 1000000.0/interval << endl;
 
 		if( debug )
 			tc[0].start();
