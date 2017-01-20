@@ -6,45 +6,37 @@
 #include "common.h"
 #include "application.h"
 #include "time_count.h"
+#include "sprite_fix.h"
+#include "sdl_initializer.h"
 
-class GraphicsSdl {
+class GraphicsSdl : public Sdl_initializer {
 
 	private:
 
-	SDL_Renderer* renderer;
+	/*SDL_Renderer* renderer;
 	SDL_Window* window;
 	SDL_DisplayMode dm;
-	SDL_DisplayMode desktopDm;
+	*/
 
-	SDL_Texture* mig29;
-	SDL_Texture* mig29_r;
-	SDL_Texture* mig29_l;
+	Sprite_fix mig29;
+	Sprite_fix mig29_r;
+	Sprite_fix mig29_l;
 
-	SDL_Texture* f16;
-	SDL_Texture* f22;
-	SDL_Texture* f35;
+	Sprite_fix f16;
+	Sprite_fix f22;
+	Sprite_fix f35;
 
-	SDL_Texture* explosion;
-	SDL_Texture* bullet;
-	SDL_Texture* tree;
-
-	SDL_Texture* loadTexture( std::string );
-
-	int refresh_rate;
+	Sprite_fix explosion;
+	Sprite_fix bullet;
+	Sprite_fix tree;
 
 	public:
 
 	GraphicsSdl( bool vsync = true );
-	~GraphicsSdl();
-
-	//static void sdlDisplayInfo( void );
+	~GraphicsSdl() {}
 
 	void update( const Application &, const Game & );
 	void clear();
-	int refreshRate() const { return refresh_rate; };
-
-	//std::string print( void );
-
 };
 
 #endif
