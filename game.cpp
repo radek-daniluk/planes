@@ -36,11 +36,11 @@ void Game::nextStep () {
 }
 
 void Game::updateActive() {
-	NUM y1 = plane_.y() - 600; //
+	NUM y1 = plane_.y() + 600; //
 	NUM y2 = plane_.y(); // - 50;
 
 	for( auto & b : fblobs_ )
-		( b.y() < y1 || b.y() > y2 ) ? b.active( false ) : b.active( true );
+		( b.y() > y1 || b.y() < y2 ) ? b.active( false ) : b.active( true );
 }
 
 int Game::collisions() {
@@ -68,9 +68,9 @@ void Game::addBullet() {
 
 	if( plane_.reloaded() ) {
 		bullets_.push_back( Blob2d_temp<NUM>(
-			plane_.x(), plane_.y() - plane_.radius(), // x, y
+			plane_.x(), plane_.y() + plane_.radius(), // x, y
 			4, 36, //size, frames_to_live
-			0, plane_.speedY() - 20 ) ); //velocity x, velocity y
+			0, plane_.speedY() + 20 ) ); //velocity x, velocity y
 		plane_.fire();
 	}
 }

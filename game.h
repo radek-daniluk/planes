@@ -15,7 +15,7 @@ class Game {
 	private:
 	NUM speed_;
 	NUM fps_;
-	Blob2d_shoot<NUM> plane_{600, 0, 80, 30, 0, 0, 20, -20, -7, -30, 1};
+	Blob2d_shoot<NUM> plane_{600, 0, 80, 30, 0, 0, 20, -20, 30, 7, 1};
 	std::vector< Blob2d_fix<NUM> > fblobs_;
 	std::vector< Blob2d<NUM> > blobs_;
 	std::vector< Blob2d_temp<NUM> > tblobs_;

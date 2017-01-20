@@ -52,9 +52,9 @@ void Controls::eventLoop( Application& app, Game & game ) const {
 
 	// manage y axis movement
 	if( keys[ SDL_GetScancodeFromKey( SDLK_UP ) ] ) {
-		p.accel(0,-0.5);
+		p.accel(0,0.5);
 	}else if( keys[ SDL_GetScancodeFromKey( SDLK_DOWN ) ] ) {
-		p.accel(0,1);
+		p.accel(0,-1);
 	}
 
 	if( keys[ SDL_GetScancodeFromKey( SDLK_SPACE ) ] )

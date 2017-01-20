@@ -95,7 +95,7 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 
 
 	int py = game.plane().y();
-	int offset = - py + dm.h - game.plane().size();
+	int offset = py + dm.h - game.plane().size();
 
 	SDL_Rect rect;
 
@@ -103,7 +103,7 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 	for( const auto & b : game.fblobs() ) {
 		if( b.active() ) {
 			rect.x = b.x() - b.radius();
-			rect.y = b.y() - b.radius() + offset;
+			rect.y = - b.y() - b.radius() + offset;
 			rect.h = rect.w = b.size();
 			SDL_RenderCopy( renderer, tree, NULL, &rect );
 		}
@@ -112,7 +112,7 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 	// moving blobs
 	for( const auto & b : game.blobs() ) {
 		rect.x = b.x() - b.radius();
-		rect.y = b.y() - b.radius() + offset;
+		rect.y = - b.y() - b.radius() + offset;
 		rect.h = rect.w = b.size();
 		//SDL_SetRenderDrawColor( renderer, 0xF7, 0xE4, 0xB8, 0xFF );
 		//SDL_RenderFillRect( renderer , &rect );
@@ -121,7 +121,7 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 
 	for( const auto & b : game.bullets() ) {
 		rect.x = b.x() - b.radius();
-		rect.y = b.y() - b.radius() + offset;
+		rect.y = - b.y() - b.radius() + offset;
 		rect.h = rect.w = b.size();
 		//SDL_SetRenderDrawColor( renderer, 0xF7, 0xE4, 0xB8, 0xFF );
 		//SDL_RenderFillRect( renderer , &rect );
@@ -138,7 +138,7 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 		pl = mig29_r;
 
 	rect.x = game.plane().x() - 34;//game.plane().radius();
-	rect.y = game.plane().y() + offset - 50;//game.plane().radius();
+	rect.y = - game.plane().y() + offset - 50;//game.plane().radius();
 	rect.h = 100;
 	rect.w = 68;
 	SDL_RenderCopy( renderer, pl, NULL, &rect );
@@ -147,7 +147,7 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 	//temporary blobs
 	for( const auto & b : game.tblobs() ) {
 		rect.x = b.x() - b.radius();
-		rect.y = b.y() - b.radius() + offset;
+		rect.y = - b.y() - b.radius() + offset;
 		rect.h = rect.w = b.size();
 		//SDL_SetRenderDrawColor( renderer, 0x24, 0xE4, 0xB8, 0xFF );
 		//SDL_RenderFillRect( renderer , &rect );
