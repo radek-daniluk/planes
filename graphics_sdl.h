@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 #include "common.h"
 #include "application.h"
+#include "time_count.h"
 
 class GraphicsSdl {
 
@@ -29,17 +30,18 @@ class GraphicsSdl {
 
 	SDL_Texture* loadTexture( std::string );
 
-	float loopDelay;
+	int refresh_rate;
 
 	public:
 
-	GraphicsSdl();
+	GraphicsSdl( bool vsync = true );
 	~GraphicsSdl();
 
 	//static void sdlDisplayInfo( void );
 
 	void update( const Application &, const Game & );
-	float getLoopDelay() const { return loopDelay; };
+	void clear();
+	int refreshRate() const { return refresh_rate; };
 
 	//std::string print( void );
 

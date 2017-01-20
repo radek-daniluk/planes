@@ -1,6 +1,10 @@
 //application.cpp
 #include <iostream>
+#include <iomanip>
 #include <fstream>
+#include <array>
+#include <thread>
+#include <chrono>
 
 #include "application.h"
 #include "controls.h"
@@ -12,12 +16,14 @@ using std::cout;
 using std::endl;
 
 
-Application::Application( int debug ) {
+Application::Application( int debug, int loop_delay ) {
 	state_ = intro;
+	this->loop_delay = loop_delay;
+	vsync = !(bool)(loop_delay);
 	this->debug = debug;
 
 	try{
-		graphics = new GraphicsSdl();
+		graphics = new GraphicsSdl( vsync );
 	}
 	catch (const char* s) {
 		cout << s << endl;
@@ -42,16 +48,23 @@ int Application::startMainLoop ( void ) {
 
 	state_ = running;
 
-	string sep = ",";
-	TimeCount tc[4];
+	string sep = " \t";
+	std::array<TimeCount, 6> tc;
 
 	FpsCount fps;
 
+	if( debug )
+		cout << "\t\t\t\t\t\t\tfps:          " << std::setprecision(1) << std::fixed;
+
 	while( state_ ) { // state_ != quit
 
-		double interval = fps.interval();
-		cout << "\t\t\t\t\tfps interval: " << interval << "\tfps: "
-			<< 1000000.0/interval << endl;
+		int interval = fps.interval();
+		if ( debug ){
+			if( debug == 1 )
+				cout << "\b\b\b\b\b\b\b\b\b\b       " << 1000000.0/interval;
+			else if ( debug > 1 )
+				cout << "fps=" << 1000000.0/interval << " \t";
+		}
 
 		if( debug )
 			tc[0].start();
@@ -71,7 +84,7 @@ int Application::startMainLoop ( void ) {
 
 		if( debug )
 			tc[2].start();
-		gra->collisions();
+		gra->updateActive();
 		if( debug ){
 			tc[2].stop();
 			if(debug > 1)
@@ -79,28 +92,60 @@ int Application::startMainLoop ( void ) {
 
 		if( debug )
 			tc[3].start();
-		graphics->update( *this, *gra );
+		gra->collisions();
 		if( debug ){
 			tc[3].stop();
 			if(debug > 1)
-				cout << tc[3].last() << endl;}
+				cout << tc[3].last() << sep;}
 
-		SDL_Delay( graphics->getLoopDelay() );
+		if( debug && !vsync )
+			tc[5].start();
+		graphics->clear();
+		if( debug && !vsync ) {
+			tc[5].stop();
+			if(debug > 1)
+				cout << tc[5].last() << sep;}
+
+		if( debug )
+			tc[4].start();
+		graphics->update( *this, *gra );
+		if( debug ) {
+			tc[4].stop();
+			if(debug > 1)
+				cout << tc[4].last() << endl;}
+
+		if ( !vsync )
+			std::this_thread::sleep_for( std::chrono::microseconds( loop_delay ) );
+
 	}
 
 	if( debug ) {
 		cout << "Execution times summary" << endl;
-		cout << "  \tcontrl\tnextStp\tcollis\trender" << endl << "mean\t"
-		<< tc[0].mean() << "\t" << tc[1].mean() << "\t"<< tc[2].mean() << "\t"
-		<< tc[3].mean() << " [µs]" << endl << "min\t"
-		<< tc[0].min() << "\t" << tc[1].min() << "\t" << tc[2].min() << "\t"
-		<< tc[3].min() << " [µs]" << endl << "max\t"
-		<< tc[0].max() << "\t" << tc[1].max() << "\t" << tc[2].max() << "\t"
-		<< tc[3].max() << " [µs]" << endl << "sum\t"
-		<< tc[0].sum()/1000 << "\t" << tc[1].sum()/1000 << "\t"
-		<< tc[2].sum()/1000 << "\t" << tc[3].sum()/1000 << " [ms] total: "
-		<< ( tc[0].sum() + tc[1].sum() + tc[2].sum() + tc[3].sum() )/1000000
-		<< "s" << endl;
+		cout << "  \tcontrl\tnextStp\tactive\tcollis\trender\tclear";
+		if( vsync )
+			cout << "-N/A(vsync)";
+
+		cout << endl << "min";
+		for( auto & t : tc )
+			cout << sep << t.min();
+
+		cout << " [µs]" << endl << "mean";
+		for( auto & t : tc )
+			cout << sep << t.mean();
+
+		cout << " [µs]" << endl << "max";
+		for( auto & t : tc )
+			cout << sep << t.max();
+
+		cout << " [µs]" << endl << "sum";
+		for( auto & t : tc )
+			cout << sep << t.sum()/1000;
+
+		cout << " [ms]" << endl << "total: ";
+		float total = 0;
+			for( auto& t : tc )
+				total += t.sum();
+		cout << total/1000000 << " s" << endl;
 	}
 
 	delete gra;

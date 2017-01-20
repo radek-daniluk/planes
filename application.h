@@ -15,6 +15,8 @@ class Application {
 	Game* gra;
 	GraphicsSdl* graphics;
 	Controls* controls;
+	bool vsync;
+	int loop_delay{0}; //microseconds
 
 	int debug{0};
 
@@ -22,7 +24,7 @@ class Application {
 
 	public:
 
-	Application( int debug );
+	Application( int debug = 0, int loop_delay = 0 );
 	~Application();
 
 	int startMainLoop ( void );

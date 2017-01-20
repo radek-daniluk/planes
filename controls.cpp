@@ -55,11 +55,6 @@ void Controls::eventLoop( Application& app, Game & game ) const {
 		p.accel(0,-0.5);
 	}else if( keys[ SDL_GetScancodeFromKey( SDLK_DOWN ) ] ) {
 		p.accel(0,1);
-	}else{// gradually increase or decrease speed to 0
-		if( p.speedY() < p.maxY() )
-			p.accel(0,0.4);
-		//else if( p.speedY() > 0 )
-			//p.accel(0,-1);
 	}
 
 	if( keys[ SDL_GetScancodeFromKey( SDLK_SPACE ) ] )

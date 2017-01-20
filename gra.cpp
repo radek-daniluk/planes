@@ -12,10 +12,10 @@ using std::stringstream;
 int main(int argc, char** argv) {
 
 	int debug_app = 1;
+	int loop_delay = 0;
 
-	int i;
 	cout << "arguments from CLI:" << endl;
-	for(i=0; i<argc; i++)
+	for(int i=0; i<argc; i++)
 		cout << i << "=" << argv[i] << endl;
 
 	if (argc > 1) {
@@ -24,7 +24,14 @@ int main(int argc, char** argv) {
 	}
 	cout << "debug=" << debug_app << endl;
 
-	Application app( debug_app );
+	if (argc > 2) {
+		stringstream s( argv[2] );
+		s >> loop_delay;
+		cout << "vsync disabled. loop delay=" << loop_delay << "µs" << endl;
+	}
+
+
+	Application app( debug_app, loop_delay );
 	// CLI arguments handling
 
 	//if ( initNewGame() ) { cerr << "initNewGame() error << endl; return 2; }

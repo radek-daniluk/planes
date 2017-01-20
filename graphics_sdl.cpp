@@ -10,7 +10,7 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
-GraphicsSdl::GraphicsSdl(){//bool fullscreen, int width, int height) {
+GraphicsSdl::GraphicsSdl( bool vsync ){//bool fullscreen, int width, int height) {
 
 	if ( SDL_Init( SDL_INIT_VIDEO ) )
 		throw "SDL_Init(SDL_INIT_VIDEO) failed: SDL_GetError: " +
@@ -21,12 +21,15 @@ GraphicsSdl::GraphicsSdl(){//bool fullscreen, int width, int height) {
 			(std::string) SDL_GetError();
 	desktopDm = dm;
 
-	window = SDL_CreateWindow ( "gierka", 0, 0, 1000, dm.h, 0);//SDL_WINDOW_SHOWN );
+	window = SDL_CreateWindow ( "gierka", 0, 0, 800, dm.h, 0);//SDL_WINDOW_SHOWN );
 	if( window == NULL )
 		throw "error SDL_CreateWindow; SDL_GetError():" +
 			(std::string) SDL_GetError();
 
-	renderer = SDL_CreateRenderer ( window, -1, SDL_RENDERER_PRESENTVSYNC );
+	Uint32 flags = 0;
+	if (vsync) flags = SDL_RENDERER_PRESENTVSYNC;
+
+	renderer = SDL_CreateRenderer ( window, -1, flags );
 	if( renderer == NULL )
 		throw "error SDL_CreateRenderer; SDL_GetError():" +
 			(std::string) SDL_GetError();
@@ -49,7 +52,7 @@ GraphicsSdl::GraphicsSdl(){//bool fullscreen, int width, int height) {
 	bullet = loadTexture( "img/bullet.png" );
 
 
-	loopDelay = 1000.0/(double)dm.refresh_rate; //can be done more precisely
+	refresh_rate = dm.refresh_rate;
 }
 
 GraphicsSdl::~GraphicsSdl() {
@@ -78,6 +81,11 @@ GraphicsSdl::~GraphicsSdl() {
 	SDL_Quit();
 }
 
+void GraphicsSdl::clear() {
+	SDL_SetRenderDrawColor( renderer, 0x5C, 0xDF, 0x46, 0xFF );
+	SDL_RenderClear( renderer );
+}
+
 void GraphicsSdl::update( const Application & app, const Game & game ) {
 
 	/*Uint8 alpha;
@@ -91,17 +99,14 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 
 	SDL_Rect rect;
 
-	//background
-	SDL_SetRenderDrawColor( renderer, 0x5C, 0xDF, 0x46, 0xFF );
-	SDL_RenderClear( renderer );
-
 	// fixed blobs
 	for( const auto & b : game.fblobs() ) {
-		rect.x = b.x() - b.radius();
-		rect.y = b.y() - b.radius() + offset;
-		rect.h = rect.w = b.size();
-		//SDL_SetRenderDrawColor( renderer, 0xF7, 0xE4, 0x31, 0xFF );
-		SDL_RenderCopy( renderer, tree, NULL, &rect );
+		if( b.active() ) {
+			rect.x = b.x() - b.radius();
+			rect.y = b.y() - b.radius() + offset;
+			rect.h = rect.w = b.size();
+			SDL_RenderCopy( renderer, tree, NULL, &rect );
+		}
 	}
 
 	// moving blobs
