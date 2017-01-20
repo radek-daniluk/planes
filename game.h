@@ -12,14 +12,26 @@ typedef double NUM;
 
 class Game {
 
+	typedef std::vector< Blob2d_fix<NUM> > VectorF;
+	typedef std::vector< Blob2d<NUM> > VectorB;
+	typedef std::vector< Blob2d_temp<NUM> > VectorT;
+
 	private:
 	NUM speed_;
 	NUM fps_;
 	Blob2d_shoot<NUM> plane_{600, 0, 80, 30, 0, 0, 20, -20, 30, 7, 1};
-	std::vector< Blob2d_fix<NUM> > fblobs_;
-	std::vector< Blob2d<NUM> > blobs_;
-	std::vector< Blob2d_temp<NUM> > tblobs_;
-	std::vector< Blob2d_temp<NUM> > bullets_;
+	VectorF fblobs_;
+	VectorB blobs_;
+	VectorT tblobs_;
+	VectorT bullets_;
+
+	VectorF::iterator to_active_fix { fblobs_.end() };
+	VectorF::iterator from_active_fix { fblobs_.end() };
+
+	VectorB::iterator to_active_blob { blobs_.end() };
+	VectorB::iterator from_active_blob { blobs_.end() };
+
+	bool check_game_format(); // checks if blobs are in ascending order
 
 	public:
 

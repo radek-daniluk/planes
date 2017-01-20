@@ -118,4 +118,8 @@ istream & operator>>( istream & is, Blob2d_fix<T> & b ) {
 	return is;
 }
 
+template <typename T>
+bool operator<( Blob2d_fix<T> & b1, Blob2d_fix<T> & b2 ) {
+	return b1.y() < b2.y();
+}
 #endif

@@ -1,5 +1,6 @@
 //game.cpp
 #include <iterator>
+#include <algorithm>
 #include "game.h"
 
 Game::Game( std::istream & is, NUM speed, NUM fps) : speed_(speed), fps_(fps) {
@@ -39,8 +40,14 @@ void Game::updateActive() {
 	NUM y1 = plane_.y() + 600; //
 	NUM y2 = plane_.y(); // - 50;
 
-	for( auto & b : fblobs_ )
-		( b.y() > y1 || b.y() < y2 ) ? b.active( false ) : b.active( true );
+	while( to_active_fix < fblobs_.end() && to_active_fix->y() < y1) {
+		to_active_fix->active(true);
+		++to_active_fix;
+	}
+	while( from_active_fix < fblobs_.end() && from_active_fix->y() < y2 ) {
+		from_active_fix->active(false);
+		++from_active_fix;
+	}
 }
 
 int Game::collisions() {
@@ -114,9 +121,18 @@ std::istream & operator>>( std::istream & is, Game & g) {
 	}
 
 	if( is.eof() )
-		std::cout << "Game loaded" << std::endl;
+		std::cout << "Game data loaded. Checking data..." << std::endl;
+	if( g.check_game_format() )
+		std::cout << "Game format OK" << std::endl;
 	else
 		throw "Game failed to load";
 
+	g.to_active_fix = g.from_active_fix = g.fblobs_.begin();
+	g.to_active_blob = g.from_active_blob = g.blobs_.begin();
+
 	return is;
+}
+
+bool Game::check_game_format() {
+	return std::is_sorted( fblobs_.begin(), fblobs_.end() );
 }
