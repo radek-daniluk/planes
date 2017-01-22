@@ -3,37 +3,40 @@
 #include <algorithm>
 #include "game.h"
 
-Game::Game( std::istream & is, NUM speed, NUM fps) : speed_(speed), fps_(fps) {
+Game::Game( std::istream & is, NUM speed ) : speed_(speed) {
 	is >> *this;
 }
 
-Game::Game(NUM speed, NUM fps) : speed_(speed), fps_(fps) {}
+Game::Game( NUM speed ) : speed_(speed) {}
 
-void Game::nextStep () {
+void Game::nextStep ( double interval ) {
 
-	plane_.step( speed_/fps_ );
+	// accelerate speed according to control class instructions and game speed
+	double intervalNorm = interval * speed_;
+	plane_.accel( accel_plane_x, accel_plane_y, intervalNorm );
+	accel_plane_x = accel_plane_y = 0;
+
+	plane_.step( intervalNorm );
 
 	for( auto & b : blobs_ )
-		b.step( speed_/fps_ );
+		b.step( intervalNorm );
 
 	for( auto it = tblobs_.begin(); it != tblobs_.end(); ++it )
 		if( it->ttl() > 0 ) {
-			--*it;
 			it->speedX( it->speedX()*0.9 );
 			it->speedY( it->speedY()*0.9 );
-			it->step( speed_/fps_ );
+			it->step( intervalNorm );
 		}else
 			tblobs_.erase( it-- );
 
 
 	for( auto it = bullets_.begin(); it != bullets_.end(); ++it )
 		if( it->ttl() > 0 ) {
-			--*it;
-			it->step( speed_/fps_ );
+			it->step( intervalNorm );
 		}else
 			bullets_.erase( it-- );
 
-	//std::cout << *this << std::endl;
+	std::cout << *this << std::endl;
 }
 
 void Game::updateActive() {
@@ -50,25 +53,20 @@ void Game::updateActive() {
 	}
 }
 
-int Game::collisions() {
-
-	int collisions = 0;
+void Game::collisions() {
 
 	for( const auto & b : blobs_ ) {
 		if( plane_.distance(b) < 0 ) {
-			++collisions;
-			tblobs_.push_back( Blob2d_temp<NUM>( (Blob2d<NUM>)plane_, 18 ) );
+			tblobs_.push_back( Blob2d_temp<NUM>( (Blob2d<NUM>)plane_, 0.5 ) );
 		}
 	}
 
 	for( auto it = bullets_.begin(); it != bullets_.end(); ++it)
 		for( const auto & b : blobs_ )
 			if( it->distance(b) < 0 ) {
-				tblobs_.push_back( Blob2d_temp<NUM>(b, 18) ); // add explosion
+				tblobs_.push_back( Blob2d_temp<NUM>(b, 0.5) ); // add explosion
 				bullets_.erase( it-- ); //remove bullet
 			}
-
-	return collisions;
 }
 
 void Game::addBullet() {
@@ -76,8 +74,8 @@ void Game::addBullet() {
 	if( plane_.reloaded() ) {
 		bullets_.push_back( Blob2d_temp<NUM>(
 			plane_.x(), plane_.y() + plane_.radius(), // x, y
-			4, 36, //size, frames_to_live
-			0, plane_.speedY() + 20 ) ); //velocity x, velocity y
+			12, 0.7, //size, time to live
+			0, plane_.speedY() + 1000*speed_ ) ); //velocity x, velocity y
 		plane_.fire();
 	}
 }

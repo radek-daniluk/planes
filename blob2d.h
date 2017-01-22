@@ -58,13 +58,12 @@ class Blob2d : public Blob2d_fix<T> {
 		this->yAdd( velocity_y_*speed_multiplicator );
 	}*/
 
-	void accel( T delta_x, T delta_y );
+	void accel( T delta_x, T delta_y, T interval );
 	void stopX() { velocity_x_ = 0; }
 	void stopY() { velocity_y_ = 0; }
 	void stop() { velocity_x_ = velocity_y_ = 0; }
 
-	void step( T speed_multiplicator );
-	void operator++() { this->xAdd(velocity_x_); this->yAdd(velocity_y_); }
+	void step( T time_interval );
 
 // set methods
 	void speed( T new_velocity_x, T new_velocity_y ) {
@@ -99,9 +98,9 @@ class Blob2d : public Blob2d_fix<T> {
 
 // take a movement step according to current speed and multiplicator
 template <typename T>
-void Blob2d<T>::step( T speed_multiplicator ) {
-	this->xAdd( velocity_x_*speed_multiplicator );
-	this->yAdd( velocity_y_*speed_multiplicator );
+void Blob2d<T>::step( T time_interval ) {
+	this->xAdd( velocity_x_ * time_interval );
+	this->yAdd( velocity_y_ * time_interval );
 }
 
 
@@ -130,9 +129,10 @@ Blob2d<T>::Blob2d( std::istream & is ) : Blob2d_fix<T>( is ) {
 // method changes x and y elements of Blob's velocity
 // It checks max and min velocity limits
 template <typename T>
-void Blob2d<T>::accel( T delta_x, T delta_y ) {
+void Blob2d<T>::accel( T accel_x, T accel_y, T interval ) {
 
-	T tempv = velocity_x_ + delta_x;
+	std::cout<< "dupa" << accel_y << " " << interval << std::endl;
+	T tempv = velocity_x_ + accel_x * interval;
 	if( tempv > max_x_ )
 		velocity_x_ = max_x_;
 	else if( tempv < min_x_ )
@@ -140,7 +140,8 @@ void Blob2d<T>::accel( T delta_x, T delta_y ) {
 	else
 		velocity_x_ = tempv;
 
-	tempv = velocity_y_ + delta_y;
+	tempv = velocity_y_ + accel_y * interval;
+	std::cout<< "dup1" << velocity_y_ << " " << accel_y * interval << std::endl;
 	if( tempv > max_y_ )
 		velocity_y_ = max_y_;
 	else if( tempv < min_y_ )

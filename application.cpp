@@ -9,7 +9,7 @@
 #include "application.h"
 #include "controls.h"
 #include "time_count.h"
-#include "fps_count.h"
+#include "time_loop.h"
 
 using std::cerr;
 using std::cout;
@@ -52,19 +52,19 @@ int Application::startMainLoop ( void ) {
 	string sep = " \t";
 	std::array<TimeCount, 6> tc;
 
-	FpsCount fps;
+	TimeLoop timeL;
 
 	if( debug )
-		cout << "\t\t\t\t\t\t\tfps:          " << std::setprecision(1) << std::fixed;
+		cout << "\t\t\t\t\t\t\t\t\tfps" << std::setprecision(1) << std::fixed << endl;
 
 	while( state_ ) { // state_ != quit
 
-		int interval = fps.interval();
+		double interval = timeL.interval();
 		if ( debug ){
 			if( debug == 1 )
-				;//cout << "\b\b\b\b\b\b\b\b\b\b       " << 1000000.0/interval;
+				cout << "\b\b\b\b\b\b\b\b\b\b       " << 1.0/interval;
 			else if ( debug > 1 )
-				cout << "fps=" << 1000000.0/interval << " \t";
+				cout << "fps=" << 1.0/interval << " \t";
 		}
 
 		if( debug )
@@ -77,7 +77,7 @@ int Application::startMainLoop ( void ) {
 
 		if( debug )
 			tc[1].start();
-		gra->nextStep();
+		gra->nextStep( interval );
 		if( debug ){
 			tc[1].stop();
 			if(debug > 1)
@@ -116,8 +116,7 @@ int Application::startMainLoop ( void ) {
 				cout << tc[4].last() << endl;}
 
 		if ( !vsync )
-			std::this_thread::sleep_for( std::chrono::microseconds( loop_delay ) );
-
+			std::this_thread::sleep_for( std::chrono::milliseconds( loop_delay ) );
 	}
 
 	if( debug ) {
@@ -158,7 +157,7 @@ int Application::loadGame( std::string file_name ) {
 
 	std::ifstream fs( file_name );
 	try{
-		gra = new Game( fs, 60, 60 );
+		gra = new Game( fs, 1.8 );
 	}
 	catch (const char* s) {
 		std::cout << s << " from file:\"" << file_name << "\"" << std::endl;

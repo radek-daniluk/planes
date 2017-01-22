@@ -3,21 +3,18 @@
 #define GRAPHICS_SDL_H
 
 #include <SDL2/SDL.h>
+#include <vector>
 #include "common.h"
 #include "application.h"
 #include "time_count.h"
 #include "sprite.h"
-#include "animation.h"
 #include "sdl_initializer.h"
 
 class GraphicsSdl : public Sdl_initializer {
 
 	private:
 
-	/*SDL_Renderer* renderer;
-	SDL_Window* window;
-	SDL_DisplayMode dm;
-	*/
+	int scale_factor;
 
 	Sprite mig29;
 	Sprite mig29_r;
@@ -30,7 +27,7 @@ class GraphicsSdl : public Sdl_initializer {
 	Sprite bullet;
 	Sprite tree;
 
-	Animation explosion;
+	std::vector<Sprite> explosion;
 
 	public:
 

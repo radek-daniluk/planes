@@ -38,23 +38,27 @@ void Controls::eventLoop( Application& app, Game & game ) const {
 
 	auto & p = game.nonConstPlane();
 
+	std::cout << "speed " << p.speedX() << std::endl;
+
 	// manage x axis movement
 	if( keys[ SDL_GetScancodeFromKey( SDLK_LEFT ) ] ) {
-		p.accel(-1,0);
+		game.accelPlane( -1000, 0 );
 	}else if( keys[ SDL_GetScancodeFromKey( SDLK_RIGHT ) ] ) {
-		p.accel(1,0);
+		game.accelPlane( 1000, 0 );
 	}else { // gradually increase or decrease speed to 0
-		if( p.speedX() < 0 )
-			p.accel(1,0);
-		else if( p.speedX() > 0 )
-			p.accel(-1,0);
+		if( p.speedX() < -1000 )
+			game.accelPlane( 1000, 0 );
+		else if( p.speedX() > 1000 )
+			game.accelPlane( -1000 ,0 );
+		else
+			p.stopX();
 	}
 
 	// manage y axis movement
 	if( keys[ SDL_GetScancodeFromKey( SDLK_UP ) ] ) {
-		p.accel(0,0.5);
+		game.accelPlane( 0, 1000 );
 	}else if( keys[ SDL_GetScancodeFromKey( SDLK_DOWN ) ] ) {
-		p.accel(0,-1);
+		game.accelPlane( 0, -1000 );
 	}
 
 	if( keys[ SDL_GetScancodeFromKey( SDLK_SPACE ) ] )

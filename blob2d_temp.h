@@ -18,8 +18,8 @@ template <typename T>
 class Blob2d_temp : public Blob2d<T> {
 
 	private:
-	int ttl_start{60};
-	int ttl_; //frame to live - TODO add external multiplicator to manage time
+	double ttl_start{3};
+	double ttl_;
 	void load_blob_els( istream & );
 	void fromStream( istream & );
 
@@ -29,27 +29,30 @@ class Blob2d_temp : public Blob2d<T> {
 		T position_x,
 		T position_y,
 		T size,
-		int ttl,
+		double ttl,
 		T velocity_x,
 		T velocity_y
 	);
 	Blob2d_temp( std::istream & is );
-	Blob2d_temp( const Blob2d<T> &, int );
+	Blob2d_temp( const Blob2d<T> &, double );
 	virtual ~Blob2d_temp() {}
 
 	virtual std::string toString() const;
 	virtual char type() const { return 't'; } // identify as movable temp blob
 
-	void operator--() { --ttl_; }
+	void step( T interval ) {
+		Blob2d<T>::step( interval );
+		ttl_ -= interval;
+	}
 
 // set methods
 
-	void ttl( int new_ttl ) { ttl_ = new_ttl; }
+	void ttl( double new_ttl ) { ttl_ = new_ttl; }
 
 // get methods
 
-	int ttlStart() const { return ttl_start; }
-	int ttl() const { return ttl_; }
+	double ttlStart() const { return ttl_start; }
+	double ttl() const { return ttl_; }
 // friends
 	template <typename U>
 	friend ostream & operator<<( ostream &, const Blob2d_temp<U> & );
@@ -62,7 +65,7 @@ template <typename T>
 Blob2d_temp<T>::Blob2d_temp(
 		T position_x, T position_y,
 		T size,
-		int ttl,
+		double ttl,
 		T velocity_x, T velocity_y) :
 	Blob2d<T>( position_x, position_y, size, velocity_x, velocity_y ),
 	ttl_start(ttl),
@@ -81,7 +84,7 @@ void Blob2d_temp<T>::load_blob_els( istream & is ) {
 }
 
 template <typename T>
-Blob2d_temp<T>::Blob2d_temp( const Blob2d<T> & b, int ttl) :
+Blob2d_temp<T>::Blob2d_temp( const Blob2d<T> & b, double ttl) :
 		Blob2d<T>( b ),
 		ttl_start( ttl ),
 		ttl_( ttl )

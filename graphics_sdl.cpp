@@ -19,19 +19,19 @@ GraphicsSdl::GraphicsSdl( bool vsync ) :
 		f22{ "img/F-22.png", renderer },
 		f35{ "img/F-35.png", renderer },
 		bullet{ "img/bullet.png", renderer },
-		tree{ "img/tree.png", renderer },
-		explosion{ {"img/explosion1.png",
+		tree{ "img/tree.png", renderer }
+{
+	for( auto & path : {"img/explosion1.png",
 						"img/explosion2.png",
 						"img/explosion3.png",
 						"img/explosion4.png",
 						"img/explosion5.png",
-						"img/explosion6.png"},
-						renderer }
-{
-	for( int i=0; i<explosion.size(); ++i ) {
-		explosion.w( explosion.w()/2 );
-		explosion.h( explosion.h()/2 );
-		++explosion;
+						"img/explosion6.png"} )
+		explosion.emplace_back( path, renderer );
+
+	for( unsigned int i=0; i<explosion.size(); ++i ) {
+		explosion[i].w( explosion[i].w()/2 );
+		explosion[i].h( explosion[i].h()/2 );
 	}
 }
 
@@ -70,10 +70,10 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 	}
 
 	for( const auto & b : game.bullets() ) {
-		bullet.x( b.x() );
+		bullet.x( b.x() - b.radius() );
 		bullet.y( -b.y() - b.radius() + offset );
-		bullet.h( b.size() * 4 );
-		bullet.w( b.size() );
+		bullet.h( b.size() );
+		bullet.w( b.size() / 2 );
 
 		SDL_SetRenderDrawColor( renderer, 0xFF, 0x00, 0x00, 0xFF );
 		SDL_RenderFillRect( renderer , bullet.rect() );
@@ -93,25 +93,23 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 	mig29.y( -game.plane().y() + offset - 50);//game.plane().radius();
 	//rect.h = 100;
 	//rect.w = 68;
-	SDL_RenderCopy( renderer, pl, NULL, mig29.rect() ); //TODO create animated sprite
+	SDL_RenderCopy( renderer, pl, NULL, mig29.rect() );
 
 
 	//temporary blobs
 	for( const auto & b : game.tblobs() ) {
-		explosion.setActive( ( b.ttlStart() - b.ttl() )
-										/ ( b.ttlStart()/explosion.size() ) );
 
-		if ((18 - b.ttl() ) / 3 == 6 )
-			explosion.setActive( 5 );
+		int curr_frame = explosion.size() * ( b.ttlStart() - b.ttl() ) / b.ttlStart();
+		if( curr_frame == (int)explosion.size() )
+			--curr_frame;
+		else if( curr_frame < 0 )
+			curr_frame = 0;
 
-		explosion.x( b.x() - explosion.w()/2 );
-		explosion.y( -b.y() - explosion.h()/2 + offset );
+		explosion[curr_frame].x( b.x() - explosion[curr_frame].w()/2 );
+		explosion[curr_frame].y( -b.y() - explosion[curr_frame].h()/2 + offset );
 
-
-
-		if( SDL_RenderCopy( renderer, explosion.texture(),
-				NULL, explosion.rect() ) )
-				std::cout << "Error error ! " << SDL_GetError() ;
+		SDL_RenderCopy( renderer, explosion[curr_frame].texture(),
+				NULL, explosion[curr_frame].rect() );
 	}
 
 	SDL_RenderPresent( renderer );

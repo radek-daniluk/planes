@@ -20,14 +20,14 @@ class Blob2d_shoot : public Blob2d<T> {
 
 	private:
 
-	const T reload_time_{20};
+	const T reload_time_{1};
 	T to_reload_{0};
 
 	void load_blob_els( istream & );
 	void fromStream( istream & );
 
-	void progress_reload( T step ) {
-		if( (to_reload_ -= step) < 0)
+	void progress_reload( T interval ) {
+		if( ( to_reload_ -= interval ) < 0)
 			//if( to_reload > reload_time ) unsigned???
 			to_reload_ = 0;
 	}
@@ -49,10 +49,12 @@ class Blob2d_shoot : public Blob2d<T> {
 	virtual char type() const { return 's'; } // identify as shooting blob
 
 	bool reloaded() const { return !to_reload_; }
+
 	void fire() { to_reload_ = reload_time_; }
-	void step( T speed_multiplicator ) {
-		Blob2d<T>::step( speed_multiplicator );
-		progress_reload( speed_multiplicator );
+
+	void step( T interval ) {
+		Blob2d<T>::step( interval );
+		progress_reload( interval );
 	}
 
 // friends
