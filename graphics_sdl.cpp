@@ -18,10 +18,22 @@ GraphicsSdl::GraphicsSdl( bool vsync ) :
 		f16{ "img/F-16.png", renderer },
 		f22{ "img/F-22.png", renderer },
 		f35{ "img/F-35.png", renderer },
-		explosion{ "img/explosion3.png", renderer },
 		bullet{ "img/bullet.png", renderer },
-		tree{ "img/tree.png", renderer }
-{}
+		tree{ "img/tree.png", renderer },
+		explosion{ {"img/explosion1.png",
+						"img/explosion2.png",
+						"img/explosion3.png",
+						"img/explosion4.png",
+						"img/explosion5.png",
+						"img/explosion6.png"},
+						renderer }
+{
+	for( int i=0; i<explosion.size(); ++i ) {
+		explosion.w( explosion.w()/2 );
+		explosion.h( explosion.h()/2 );
+		++explosion;
+	}
+}
 
 void GraphicsSdl::clear() {
 	SDL_SetRenderDrawColor( renderer, 0x5C, 0xDF, 0x46, 0xFF );
@@ -44,6 +56,7 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 		if( b.active() ) {
 			tree.x( b.x() - b.radius() );
 			tree.y( -b.y() - b.radius() + offset );
+			tree.h( tree.w( b.size() ) );
 			SDL_RenderCopy( renderer, tree.texture() , NULL, tree.rect() );
 		}
 	}
@@ -52,15 +65,19 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 	for( const auto & b : game.blobs() ) {
 		f16.x( b.x() - b.radius() );
 		f16.y( -b.y() - b.radius() + offset );
-		//rect.h = rect.w = b.size();
+		//f16.h( f16.w( b.size() ) );
 		SDL_RenderCopy( renderer, f16.texture() , NULL, f16.rect() );
 	}
 
 	for( const auto & b : game.bullets() ) {
-		bullet.x( b.x() - b.radius() );
+		bullet.x( b.x() );
 		bullet.y( -b.y() - b.radius() + offset );
-		//rect.h = rect.w = b.size();
-		SDL_RenderCopy( renderer, bullet.texture() , NULL, bullet.rect() );
+		bullet.h( b.size() * 4 );
+		bullet.w( b.size() );
+
+		SDL_SetRenderDrawColor( renderer, 0xFF, 0x00, 0x00, 0xFF );
+		SDL_RenderFillRect( renderer , bullet.rect() );
+		//SDL_RenderCopy( renderer, bullet.texture() , NULL, bullet.rect() );
 	}
 
 	//plane
@@ -81,12 +98,20 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 
 	//temporary blobs
 	for( const auto & b : game.tblobs() ) {
-		explosion.x( b.x() - b.radius() );
-		explosion.y( -b.y() - b.radius() + offset );
-		//rect.h = rect.w = b.size();
-		//SDL_SetRenderDrawColor( renderer, 0x24, 0xE4, 0xB8, 0xFF );
-		//SDL_RenderFillRect( renderer , &rect );
-		SDL_RenderCopy( renderer, explosion.texture() , NULL, explosion.rect() );
+		explosion.setActive( ( b.ttlStart() - b.ttl() )
+										/ ( b.ttlStart()/explosion.size() ) );
+
+		if ((18 - b.ttl() ) / 3 == 6 )
+			explosion.setActive( 5 );
+
+		explosion.x( b.x() - explosion.w()/2 );
+		explosion.y( -b.y() - explosion.h()/2 + offset );
+
+
+
+		if( SDL_RenderCopy( renderer, explosion.texture(),
+				NULL, explosion.rect() ) )
+				std::cout << "Error error ! " << SDL_GetError() ;
 	}
 
 	SDL_RenderPresent( renderer );

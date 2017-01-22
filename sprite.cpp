@@ -1,12 +1,9 @@
-//sprite_fix.h
+//sprite.h
 // Class represents simple 2D graphical sprite with fixed size and no rotation
-#ifndef SPRITE_FIX_H
-#define SPRITE_FIX_H
-
 #include <iostream>
-#include "sprite_fix.h"
+#include "sprite.h"
 
-Sprite_fix::Sprite_fix( std::string path_to_file, SDL_Renderer * renderer,
+Sprite::Sprite( std::string path_to_file, SDL_Renderer * renderer,
 		int x, int y ) {
 
 	texture_ = load_texture( path_to_file, renderer );
@@ -21,7 +18,7 @@ Sprite_fix::Sprite_fix( std::string path_to_file, SDL_Renderer * renderer,
 	rect_.h = height;
 }
 
-SDL_Texture * Sprite_fix::load_texture( std::string path, SDL_Renderer * renderer ) {
+SDL_Texture * Sprite::load_texture( std::string path, SDL_Renderer * renderer ) {
 
 	SDL_Texture* new_texture = NULL;
 
@@ -40,4 +37,3 @@ SDL_Texture * Sprite_fix::load_texture( std::string path, SDL_Renderer * rendere
 
 	return new_texture;
 }
-#endif

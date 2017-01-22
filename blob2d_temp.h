@@ -18,7 +18,8 @@ template <typename T>
 class Blob2d_temp : public Blob2d<T> {
 
 	private:
-	int ttl_{120}; //frame to live - TODO add external multiplicator to manage time
+	int ttl_start{60};
+	int ttl_; //frame to live - TODO add external multiplicator to manage time
 	void load_blob_els( istream & );
 	void fromStream( istream & );
 
@@ -33,7 +34,7 @@ class Blob2d_temp : public Blob2d<T> {
 		T velocity_y
 	);
 	Blob2d_temp( std::istream & is );
-	Blob2d_temp( const Blob2d<T> & );
+	Blob2d_temp( const Blob2d<T> &, int );
 	virtual ~Blob2d_temp() {}
 
 	virtual std::string toString() const;
@@ -47,7 +48,8 @@ class Blob2d_temp : public Blob2d<T> {
 
 // get methods
 
-	int ttl() { return ttl_; }
+	int ttlStart() const { return ttl_start; }
+	int ttl() const { return ttl_; }
 // friends
 	template <typename U>
 	friend ostream & operator<<( ostream &, const Blob2d_temp<U> & );
@@ -63,6 +65,7 @@ Blob2d_temp<T>::Blob2d_temp(
 		int ttl,
 		T velocity_x, T velocity_y) :
 	Blob2d<T>( position_x, position_y, size, velocity_x, velocity_y ),
+	ttl_start(ttl),
 	ttl_(ttl)
 {}
 
@@ -73,19 +76,21 @@ Blob2d_temp<T>::Blob2d_temp( std::istream & is ) : Blob2d<T>( is ) {
 
 template <typename T>
 void Blob2d_temp<T>::load_blob_els( istream & is ) {
-	if( ! (is >> ttl_ ) )
+	if( ! (is >> ttl_start >> ttl_ ) )
 		throw "Loading Blob2d_temp<T> elements failed";
 }
 
 template <typename T>
-Blob2d_temp<T>::Blob2d_temp( const Blob2d<T> & b) :
-		Blob2d<T>( b )
+Blob2d_temp<T>::Blob2d_temp( const Blob2d<T> & b, int ttl) :
+		Blob2d<T>( b ),
+		ttl_start( ttl ),
+		ttl_( ttl )
 {}
 
 template <typename T>
 std::string Blob2d_temp<T>::toString() const {
 	std::stringstream sstr;
-	sstr << Blob2d<T>::toString() << ' ' << ttl_;
+	sstr << Blob2d<T>::toString() << ' ' << ttl_start << ' ' << ttl_;
 	return sstr.str();
 }
 

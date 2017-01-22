@@ -7,12 +7,14 @@
 #include <SDL2/SDL_image.h>
 
 class Sdl_initializer {
+
+	private:
+	int refresh_rate;
+
 	protected:
 	SDL_Renderer* renderer;
 	SDL_Window* window;
 	SDL_DisplayMode dm;
-
-	int refresh_rate;
 
 	public:
 	Sdl_initializer( bool vsync = true );

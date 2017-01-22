@@ -22,6 +22,7 @@ Application::Application( int debug, int loop_delay ) {
 	vsync = !(bool)(loop_delay);
 	this->debug = debug;
 
+	cout << "Applikacja sie robi" << endl;
 	try{
 		graphics = new GraphicsSdl( vsync );
 	}
@@ -61,7 +62,7 @@ int Application::startMainLoop ( void ) {
 		int interval = fps.interval();
 		if ( debug ){
 			if( debug == 1 )
-				cout << "\b\b\b\b\b\b\b\b\b\b       " << 1000000.0/interval;
+				;//cout << "\b\b\b\b\b\b\b\b\b\b       " << 1000000.0/interval;
 			else if ( debug > 1 )
 				cout << "fps=" << 1000000.0/interval << " \t";
 		}

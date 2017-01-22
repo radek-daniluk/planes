@@ -57,14 +57,14 @@ int Game::collisions() {
 	for( const auto & b : blobs_ ) {
 		if( plane_.distance(b) < 0 ) {
 			++collisions;
-			tblobs_.push_back( Blob2d_temp<NUM>( (Blob2d<NUM>)plane_ ) );
+			tblobs_.push_back( Blob2d_temp<NUM>( (Blob2d<NUM>)plane_, 18 ) );
 		}
 	}
 
 	for( auto it = bullets_.begin(); it != bullets_.end(); ++it)
 		for( const auto & b : blobs_ )
 			if( it->distance(b) < 0 ) {
-				tblobs_.push_back( Blob2d_temp<NUM>(b) ); // add explosion
+				tblobs_.push_back( Blob2d_temp<NUM>(b, 18) ); // add explosion
 				bullets_.erase( it-- ); //remove bullet
 			}
 

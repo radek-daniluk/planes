@@ -6,7 +6,8 @@
 #include "common.h"
 #include "application.h"
 #include "time_count.h"
-#include "sprite_fix.h"
+#include "sprite.h"
+#include "animation.h"
 #include "sdl_initializer.h"
 
 class GraphicsSdl : public Sdl_initializer {
@@ -18,17 +19,18 @@ class GraphicsSdl : public Sdl_initializer {
 	SDL_DisplayMode dm;
 	*/
 
-	Sprite_fix mig29;
-	Sprite_fix mig29_r;
-	Sprite_fix mig29_l;
+	Sprite mig29;
+	Sprite mig29_r;
+	Sprite mig29_l;
 
-	Sprite_fix f16;
-	Sprite_fix f22;
-	Sprite_fix f35;
+	Sprite f16;
+	Sprite f22;
+	Sprite f35;
 
-	Sprite_fix explosion;
-	Sprite_fix bullet;
-	Sprite_fix tree;
+	Sprite bullet;
+	Sprite tree;
+
+	Animation explosion;
 
 	public:
 
