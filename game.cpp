@@ -58,7 +58,7 @@ void Game::nextStep ( double interval ) {
 		}else
 			wreckage_.erase( it-- );
 
-	std::cout << *this << std::endl;
+	//std::cout << *this << std::endl;
 }
 
 void Game::updateActive() {

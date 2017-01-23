@@ -26,7 +26,8 @@ Application::Application( int debug, int loop_delay ) {
 		graphics = new GraphicsSdl( vsync );
 	}
 	catch (const char* s) {
-		cout << s << endl;
+		if( SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", s, NULL) )
+			cout << s << endl;
 		exit(1);
 	}
 

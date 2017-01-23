@@ -1,6 +1,7 @@
 //time_loop.h
 // Class counts time in seconds between 2 consecutive calls of the
-// interval() method. First call of interval() returns time from the last call
+// interval() method. It is useful for measure frames per second.
+// First call of interval() returns time from the last call
 // of the setFirstPoint(). Constructor implicitly calls the setFirstPoint().
 
 #ifndef TIME_LOOP_H
