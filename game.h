@@ -23,6 +23,8 @@ class Game {
 	VectorB blobs_;
 	VectorT tblobs_;
 	VectorT bullets_;
+	VectorT wreckage_;
+	VectorT wreckage_big;
 
 	NUM accel_plane_x{0};
 	NUM accel_plane_y{0};
@@ -43,15 +45,17 @@ class Game {
 
 	void nextStep( double interval );
 	void updateActive();
-	void collisions();
+	void collisions( double interval );
 
 	void accelPlane( NUM x, NUM y ) { accel_plane_x += x, accel_plane_y += y; }
 
 
-	const std::vector< Blob2d<NUM> > & blobs() const { return blobs_; }
-	const std::vector< Blob2d_fix<NUM> > & fblobs() const { return fblobs_; }
-	const std::vector< Blob2d_temp<NUM> > & tblobs() const { return tblobs_; }
-	const std::vector< Blob2d_temp<NUM> > & bullets() const { return bullets_; }
+	const VectorB & blobs() const { return blobs_; }
+	const VectorF & fblobs() const { return fblobs_; }
+	const VectorT & tblobs() const { return tblobs_; }
+	const VectorT & bullets() const { return bullets_; }
+	const VectorT & wreckage() const { return wreckage_; }
+	const VectorT & wreckageBig() const { return wreckage_big; }
 
 	void addBullet();
 

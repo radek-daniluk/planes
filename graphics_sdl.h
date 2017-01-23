@@ -4,6 +4,7 @@
 
 #include <SDL2/SDL.h>
 #include <vector>
+#include <array>
 #include "common.h"
 #include "application.h"
 #include "time_count.h"
@@ -27,7 +28,10 @@ class GraphicsSdl : public Sdl_initializer {
 	Sprite bullet;
 	Sprite tree;
 
-	std::vector<Sprite> explosion;
+	std::vector<Sprite> expl;
+
+	std::array<SDL_Rect, 2> wreckBig;
+	std::array<SDL_Rect, 2> wreck;
 
 	public:
 

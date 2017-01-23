@@ -35,6 +35,7 @@ class Blob2d_temp : public Blob2d<T> {
 	);
 	Blob2d_temp( std::istream & is );
 	Blob2d_temp( const Blob2d<T> &, double );
+	Blob2d_temp( const Blob2d_temp<T> &, double );
 	virtual ~Blob2d_temp() {}
 
 	virtual std::string toString() const;
@@ -85,6 +86,13 @@ void Blob2d_temp<T>::load_blob_els( istream & is ) {
 
 template <typename T>
 Blob2d_temp<T>::Blob2d_temp( const Blob2d<T> & b, double ttl) :
+		Blob2d<T>( b ),
+		ttl_start( ttl ),
+		ttl_( ttl )
+{}
+
+template <typename T>
+Blob2d_temp<T>::Blob2d_temp( const Blob2d_temp<T> & b, double ttl) :
 		Blob2d<T>( b ),
 		ttl_start( ttl ),
 		ttl_( ttl )

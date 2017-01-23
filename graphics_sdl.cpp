@@ -27,12 +27,16 @@ GraphicsSdl::GraphicsSdl( bool vsync ) :
 						"img/explosion4.png",
 						"img/explosion5.png",
 						"img/explosion6.png"} )
-		explosion.emplace_back( path, renderer );
+		expl.emplace_back( path, renderer );
 
-	for( unsigned int i=0; i<explosion.size(); ++i ) {
-		explosion[i].w( explosion[i].w()/2 );
-		explosion[i].h( explosion[i].h()/2 );
+	for( unsigned int i=0; i<expl.size(); ++i ) {
+		expl[i].w( expl[i].w()/2 );
+		expl[i].h( expl[i].h()/2 );
 	}
+
+
+	wreck = { SDL_Rect{43,45,27,32}, SDL_Rect{0,0,27,32} };
+	wreckBig = { SDL_Rect{0,0,42,100}, SDL_Rect{0,0,42,100} };
 }
 
 void GraphicsSdl::clear() {
@@ -69,6 +73,29 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 		SDL_RenderCopy( renderer, f16.texture() , NULL, f16.rect() );
 	}
 
+	for( const auto & b : game.wreckageBig() ) {
+
+		wreckBig[1].x = b.x() - b.radius();
+		wreckBig[1].y = -b.y() - b.radius() + offset;
+		wreckBig[1].w = b.radius();
+		wreckBig[1].h = b.radius() + 60;
+
+		SDL_RenderCopyEx( renderer, f16.texture(),
+							&wreckBig[0], &wreckBig[1],
+							b.angle(), NULL, SDL_FLIP_NONE);
+	}
+
+	for( const auto & b : game.wreckage() ) {
+
+		wreck[1].x = b.x() - b.radius();
+		wreck[1].y = -b.y() - b.radius() + offset;
+		wreck[1].w = wreck[1].h = b.size();
+
+		SDL_RenderCopyEx( renderer, f16.texture(),
+							&wreck[0], &wreck[1],
+							b.angle(), NULL, SDL_FLIP_NONE);
+	}
+
 	for( const auto & b : game.bullets() ) {
 		bullet.x( b.x() - b.radius() );
 		bullet.y( -b.y() - b.radius() + offset );
@@ -99,17 +126,19 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 	//temporary blobs
 	for( const auto & b : game.tblobs() ) {
 
-		int curr_frame = explosion.size() * ( b.ttlStart() - b.ttl() ) / b.ttlStart();
-		if( curr_frame == (int)explosion.size() )
-			--curr_frame;
-		else if( curr_frame < 0 )
-			curr_frame = 0;
+		int spr = expl.size() * ( b.ttlStart() - b.ttl() ) / b.ttlStart();
+		if( spr == (int)expl.size() )
+			--spr;
+		else if( spr < 0 )
+			spr = 0;
 
-		explosion[curr_frame].x( b.x() - explosion[curr_frame].w()/2 );
-		explosion[curr_frame].y( -b.y() - explosion[curr_frame].h()/2 + offset );
+		//expl[spr].w( expl[spr].texture().h * b.size() );
+		//expl[spr].h( expl[spr].h() * b.size() );
+		expl[spr].x( b.x() - expl[spr].w()/2 );
+		expl[spr].y( -b.y() - expl[spr].h()/2 + offset );
 
-		SDL_RenderCopy( renderer, explosion[curr_frame].texture(),
-				NULL, explosion[curr_frame].rect() );
+		SDL_RenderCopy( renderer, expl[spr].texture(),
+				NULL, expl[spr].rect() );
 	}
 
 	SDL_RenderPresent( renderer );

@@ -22,6 +22,7 @@ class Blob2d : public Blob2d_fix<T> {
 
 	T velocity_x_{ 0 };
 	T velocity_y_{ 0 };
+	T angle_{ 0 };
 	T max_x_;
 	T min_x_;
 	T max_y_;
@@ -38,6 +39,7 @@ class Blob2d : public Blob2d_fix<T> {
 		T size,
 		T velocity_x = 0,
 		T velocity_y = 0,
+		T angle_ = 0,
 		T max_x = std::numeric_limits<T>::max(), // By default
 		T min_x = std::numeric_limits<T>::min(), // no max, min speed limits
 		T max_y = std::numeric_limits<T>::max(), // (numeric type is a limit)
@@ -70,6 +72,7 @@ class Blob2d : public Blob2d_fix<T> {
 		velocity_x_ = new_velocity_x;
 		velocity_y_ = new_velocity_y;
 	}
+	void angle( T new_angle ) { angle_ = new_angle; }
 	void speedX ( T new_velocity_x ) { velocity_x_ = new_velocity_x; }
 	void speedY ( T new_velocity_y ) { velocity_y_ = new_velocity_y; }
 
@@ -80,6 +83,7 @@ class Blob2d : public Blob2d_fix<T> {
 // get methods
 	T speedX () const { return velocity_x_; }
 	T speedY () const { return velocity_y_; }
+	T angle() const { return angle_; }
 	T maxX () const { return max_x_; };
 	T minX () const { return min_x_; };
 	T maxY () const { return max_y_; };
@@ -109,12 +113,14 @@ Blob2d<T>::Blob2d(
 		T position_x, T position_y,
 		T size,
 		T velocity_x, T velocity_y,
+		T angle,
 		T max_x, T min_x,
 		T max_y, T min_y,
 		bool active ) :
 	Blob2d_fix<T>( position_x, position_y, size, active ),
 	velocity_x_(velocity_x),
 	velocity_y_(velocity_y),
+	angle_(angle),
 	max_x_(max_x),
 	min_x_(min_x),
 	max_y_(max_y),
@@ -131,7 +137,6 @@ Blob2d<T>::Blob2d( std::istream & is ) : Blob2d_fix<T>( is ) {
 template <typename T>
 void Blob2d<T>::accel( T accel_x, T accel_y, T interval ) {
 
-	std::cout<< "dupa" << accel_y << " " << interval << std::endl;
 	T tempv = velocity_x_ + accel_x * interval;
 	if( tempv > max_x_ )
 		velocity_x_ = max_x_;
@@ -141,7 +146,6 @@ void Blob2d<T>::accel( T accel_x, T accel_y, T interval ) {
 		velocity_x_ = tempv;
 
 	tempv = velocity_y_ + accel_y * interval;
-	std::cout<< "dup1" << velocity_y_ << " " << accel_y * interval << std::endl;
 	if( tempv > max_y_ )
 		velocity_y_ = max_y_;
 	else if( tempv < min_y_ )
@@ -156,6 +160,7 @@ std::string Blob2d<T>::toString() const {
 	std::stringstream sstr;
 	sstr << Blob2d_fix<T>::toString() << ' '
 		<< velocity_x_ << ' ' << velocity_y_ << ' '
+		<< angle_ << ' '
 		<< max_x_ << ' ' << min_x_ << ' '
 		<< max_y_ << ' ' << min_y_;
 	return sstr.str();
@@ -180,7 +185,7 @@ ostream & operator<<( ostream & os, const Blob2d<T> & b ) {
 template <typename T>
 void Blob2d<T>::load_blob_els( istream & is ) {
 
-	if( ! (is >> velocity_x_ >> velocity_y_
+	if( ! (is >> velocity_x_ >> velocity_y_ >> angle_
 			>> max_x_ >> min_x_ >> max_y_ >> min_y_) )
 	throw "Loading Blob2d<T> elements failed";
 }

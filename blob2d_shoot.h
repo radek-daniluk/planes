@@ -73,7 +73,7 @@ Blob2d_shoot<T>::Blob2d_shoot(
 		T velocity_x, T velocity_y,
 		T max_x, T min_x, T max_y, T min_y,
 		bool active ) :
-	Blob2d<T>( position_x, position_y, size, velocity_x, velocity_y,
+	Blob2d<T>( position_x, position_y, size, velocity_x, velocity_y, 0,
 		max_x, min_x, max_y, min_y, active ),
 	reload_time_(reload_time)
 {}

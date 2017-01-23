@@ -22,7 +22,6 @@ Application::Application( int debug, int loop_delay ) {
 	vsync = !(bool)(loop_delay);
 	this->debug = debug;
 
-	cout << "Applikacja sie robi" << endl;
 	try{
 		graphics = new GraphicsSdl( vsync );
 	}
@@ -42,6 +41,8 @@ Application::~Application() {
 
 int Application::startMainLoop ( void ) {
 
+	cout << std::setprecision(1) << std::fixed;
+
 	if( loadGame("test/2.game") ) {
 		std::cout << "Game loading error. Exiting" << std::endl;
 		return 2;
@@ -54,15 +55,17 @@ int Application::startMainLoop ( void ) {
 
 	TimeLoop timeL;
 
-	if( debug )
-		cout << "\t\t\t\t\t\t\t\t\tfps" << std::setprecision(1) << std::fixed << endl;
+	TimeCount tcvsync;
 
 	while( state_ ) { // state_ != quit
+
+		if( !vsync )
+			tcvsync.start();
 
 		double interval = timeL.interval();
 		if ( debug ){
 			if( debug == 1 )
-				cout << "\b\b\b\b\b\b\b\b\b\b       " << 1.0/interval;
+				;//cout << "\b\b\b\b\b\b\b\b\b\b       " << 1.0/interval;
 			else if ( debug > 1 )
 				cout << "fps=" << 1.0/interval << " \t";
 		}
@@ -93,7 +96,7 @@ int Application::startMainLoop ( void ) {
 
 		if( debug )
 			tc[3].start();
-		gra->collisions();
+		gra->collisions( interval );
 		if( debug ){
 			tc[3].stop();
 			if(debug > 1)
@@ -115,8 +118,11 @@ int Application::startMainLoop ( void ) {
 			if(debug > 1)
 				cout << tc[4].last() << endl;}
 
-		if ( !vsync )
-			std::this_thread::sleep_for( std::chrono::milliseconds( loop_delay ) );
+		if ( !vsync ) {
+			tcvsync.stop();
+			int delay = 1000000.0/loop_delay - tcvsync.last();
+			std::this_thread::sleep_for( std::chrono::microseconds( delay ) );
+		}
 	}
 
 	if( debug ) {
@@ -157,7 +163,7 @@ int Application::loadGame( std::string file_name ) {
 
 	std::ifstream fs( file_name );
 	try{
-		gra = new Game( fs, 1.8 );
+		gra = new Game( fs, 1.0 );
 	}
 	catch (const char* s) {
 		std::cout << s << " from file:\"" << file_name << "\"" << std::endl;

@@ -36,6 +36,28 @@ void Game::nextStep ( double interval ) {
 		}else
 			bullets_.erase( it-- );
 
+	for( auto it = wreckage_big.begin(); it != wreckage_big.end(); ++it )
+		if( it->ttl() > 0 ) {
+			it->speedX( it->speedX()*0.95 );
+			it->speedY( it->speedY()*0.95 );
+			it->angle( it->angle() - 1 );
+			it->radius( it->radius() - 0.3);
+			it->step( intervalNorm );
+		}else {
+			tblobs_.emplace_back( (Blob2d<NUM>)(*it), 0.4 );
+			wreckage_big.erase( it-- );
+		}
+
+	for( auto it = wreckage_.begin(); it != wreckage_.end(); ++it )
+		if( it->ttl() > 0 ) {
+			it->speedX( it->speedX()*0.95 );
+			it->speedY( it->speedY()*0.95 );
+			it->angle( it->angle() + 10 );
+			it->radius( it->radius() - 0.1 );
+			it->step( intervalNorm );
+		}else
+			wreckage_.erase( it-- );
+
 	std::cout << *this << std::endl;
 }
 
@@ -53,7 +75,7 @@ void Game::updateActive() {
 	}
 }
 
-void Game::collisions() {
+void Game::collisions( double interval ) {
 
 	for( const auto & b : blobs_ ) {
 		if( plane_.distance(b) < 0 ) {
@@ -64,9 +86,26 @@ void Game::collisions() {
 	for( auto it = bullets_.begin(); it != bullets_.end(); ++it)
 		for( const auto & b : blobs_ )
 			if( it->distance(b) < 0 ) {
-				tblobs_.push_back( Blob2d_temp<NUM>(b, 0.5) ); // add explosion
+				tblobs_.push_back( Blob2d_temp<NUM>( b, 0.5 ) ); // add explosion
+				//add wreckage
+				wreckage_.push_back( Blob2d_temp<NUM>( *it, 1.2 ) );
+				( wreckage_.end() - 1 )->xAdd( 40 );
+				( wreckage_.end() - 1 )->yAdd( -20 );
+				( wreckage_.end() - 1 )->speedX( 20 );
+				( wreckage_.end() - 1 )->radius( 15 );
+				wreckage_.push_back( Blob2d_temp<NUM>( b, 0.9 ) );
+				( wreckage_.end() - 1 )->xAdd( 0 );
+				( wreckage_.end() - 1 )->yAdd( -20 );
+				( wreckage_.end() - 1 )->accel( -100, 500, interval );
+				( wreckage_.end() - 1 )->radius( 15 );
+				wreckage_big.push_back( Blob2d_temp<NUM>( b, 0.6 ) );
+				( wreckage_big.end() - 1 )->yAdd( 10 );
+				( wreckage_big.end() - 1 )->speedX( -10 );
+				( wreckage_big.end() - 1 )->radius( 40 );
+
 				bullets_.erase( it-- ); //remove bullet
 			}
+
 }
 
 void Game::addBullet() {
@@ -75,7 +114,7 @@ void Game::addBullet() {
 		bullets_.push_back( Blob2d_temp<NUM>(
 			plane_.x(), plane_.y() + plane_.radius(), // x, y
 			12, 0.7, //size, time to live
-			0, plane_.speedY() + 1000*speed_ ) ); //velocity x, velocity y
+			0, plane_.speedY() + 1000 ) ); //velocity x, velocity y
 		plane_.fire();
 	}
 }
@@ -92,6 +131,8 @@ std::ostream & operator<<( std::ostream & os, const Game & g) {
 		os << b.type() << ' ' << b;
 	for (auto b : g.bullets() )  //bullets (temp blobs)
 		os << "b  " << b;
+	for (auto b : g.wreckage() )  //wreckage (temp blobs)
+		os << "w  " << b;
 	os << "p " << g.plane(); //plane
 
 	return os;
