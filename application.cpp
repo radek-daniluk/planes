@@ -73,6 +73,12 @@ int Application::startMainLoop ( void ) {
 
 		if( debug )
 			tc[0].start();
+		if( state_ == paused ){
+			timeL.pause();
+			while( state_ == paused )
+				controls->appEvents( *this ); //controls
+			timeL.resume();
+		}
 		controls->eventLoop( *this, *gra );
 		if( debug ){
 			tc[0].stop();

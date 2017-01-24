@@ -14,7 +14,7 @@ class TimeLoop {
 	private:
 
 	std::chrono::time_point<std::chrono::system_clock> prev_time_point, now;
-	std::chrono::duration<double, std::ratio<1,1> > interval_duration;
+	std::chrono::system_clock::duration interval_duration;
 	// ratio<1,1> - seconds
 
 	public:
@@ -26,11 +26,23 @@ class TimeLoop {
 		interval_duration = now - prev_time_point;
 		prev_time_point = now;
 
-		return interval_duration.count();
+		return (std::chrono::duration_cast<
+					std::chrono::duration<double, std::ratio<1,1> > >)
+				(interval_duration).count();
 	}
 
 	void setFirstPoint() {
 		prev_time_point = std::chrono::system_clock::now();
+	}
+
+	void pause() {
+		now = std::chrono::system_clock::now();
+		interval_duration = now - prev_time_point;
+	}
+
+	void resume() {
+		now = std::chrono::system_clock::now();
+		prev_time_point = (now -= interval_duration);
 	}
 };
 

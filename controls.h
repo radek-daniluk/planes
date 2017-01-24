@@ -16,6 +16,7 @@ class Controls {
 	~Controls();
 
 	void eventLoop( Application&, Game& ) const;
+	void appEvents( Application& ) const;
 
 };
 
