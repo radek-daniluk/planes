@@ -76,7 +76,7 @@ int Application::startMainLoop ( void ) {
 		if( state_ == paused ){
 			timeL.pause();
 			while( state_ == paused )
-				controls->appEvents( *this ); //controls
+				controls->pauseEventLoop( *this ); //controls
 			timeL.resume();
 		}
 		controls->eventLoop( *this, *gra );

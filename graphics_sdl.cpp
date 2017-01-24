@@ -143,11 +143,14 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 
 	if( app.state() == paused ) {
 		SDL_Rect rect;
-		rect.x = rect.y = 100;
-		rect.w = dm.w - 200;
-		rect.h = dm.h - 200;
-		SDL_SetRenderDrawColor( renderer, 0x44, 0x44, 0x44, 0x44 );
+		rect.x = dm.w/4;
+		rect.y = dm.h/4;
+		rect.w = dm.w/2;
+		rect.h = dm.h/2;
+		SDL_SetRenderDrawColor( renderer, 0x40, 0x40, 0x40, 0xFF );
+		SDL_RenderFillRect( renderer, NULL );
 		SDL_RenderFillRect( renderer, &rect );
+
 	}
 
 
