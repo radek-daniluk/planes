@@ -35,7 +35,7 @@ class TimeCount {
 	bool running_{false};
 
 	std::chrono::time_point<std::chrono::system_clock> start_point, end_point;
-	std::chrono::duration<double, std::ratio<1,1000000> > time_duration;
+	std::chrono::system_clock::duration time_duration;
 	// ratio<1,1000000> - microseconds
 
 	public:

@@ -14,7 +14,8 @@ void TimeCount::stop() {
 		end_point = std::chrono::system_clock::now();
 		time_duration = end_point - start_point;
 
-		last_time = time_duration.count();
+		last_time = ( (std::chrono::duration<double, std::ratio<1,1000000> >)
+							time_duration ).count();
 		running_ = false;
 		++num_counts;
 
