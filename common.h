@@ -9,7 +9,7 @@
 //using std::cout;
 //using std::endl;
 
-enum AppState { quit=0, intro, menu, preRun, running, stopped, paused };
+enum AppState { quit=0, intro, menu, preRun, running, stopped, paused, hidden };
 
 class Application;
 class Controls;
