@@ -12,7 +12,7 @@ using std::stringstream;
 int main(int argc, char** argv) {
 
 	int debug_app = 1;
-	int loop_delay = 0;
+	int fps = 0;
 
 	cout << "arguments from CLI:" << endl;
 	for(int i=0; i<argc; i++)
@@ -26,12 +26,13 @@ int main(int argc, char** argv) {
 
 	if (argc > 2) {
 		stringstream s( argv[2] );
-		s >> loop_delay;
-		cout << "vsync disabled. loop delay=" << loop_delay << "µs" << endl;
+		s >> fps;
+		if( fps )
+			cout << "vsync disabled. fps=" << fps << "µs" << endl;
 	}
 
 
-	Application app( debug_app, loop_delay );
+	Application app( debug_app, fps );
 	// CLI arguments handling
 
 	//if ( initNewGame() ) { cerr << "initNewGame() error << endl; return 2; }
