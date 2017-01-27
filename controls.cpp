@@ -13,10 +13,10 @@ Controls::~Controls() {}
 
 void Controls::gameEventLoop( Application & app, Game & game ) {
 
-	while( SDL_PollEvent( event ) ) {
-		basic_events( *event, app );
-		if( event->type == SDL_KEYDOWN )
-			if( event->key.keysym.sym == SDLK_ESCAPE )
+	while( SDL_PollEvent( &event ) ) {
+		basic_events( event, app );
+		if( event.type == SDL_KEYDOWN )
+			if( event.key.keysym.sym == SDLK_ESCAPE )
 				app.state( paused );
 	}
 	game_controls( game );
@@ -27,9 +27,9 @@ bool Controls::pauseEventLoop( Application & app, int sleep_time ) {
 
 	bool redraw = false;
 
-	while( SDL_PollEvent( event ) ) {
-		basic_events( *event, app );
-		redraw = pause_events( *event, app );
+	while( SDL_PollEvent( &event ) ) {
+		basic_events( event, app );
+		redraw = pause_events( event, app );
 	}
 	return redraw;
 }
@@ -37,9 +37,9 @@ bool Controls::pauseEventLoop( Application & app, int sleep_time ) {
 void Controls::hiddenEventLoop( Application & app, int sleep_time ) {
 	std::this_thread::sleep_for( std::chrono::milliseconds( sleep_time ) );
 
-	while( SDL_PollEvent( event ) ) {
-		basic_events( *event, app );
-		hidden_events( *event, app );
+	while( SDL_PollEvent( &event ) ) {
+		basic_events( event, app );
+		hidden_events( event, app );
 	}
 }
 

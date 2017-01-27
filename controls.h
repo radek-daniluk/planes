@@ -8,7 +8,7 @@ class Controls {
 
 	private:
 
-	SDL_Event * event;
+	SDL_Event event;
 	const Uint8 * keys;
 
 	void basic_events( SDL_Event &, Application & );
