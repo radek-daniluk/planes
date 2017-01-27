@@ -9,12 +9,12 @@ Sdl_initializer::Sdl_initializer( bool vsync ) {
 		throw "SDL_Init(SDL_INIT_VIDEO) failed: SDL_GetError: " +
 			(std::string) SDL_GetError();
 
-	if( SDL_GetDesktopDisplayMode(0, dm) )
+	if( SDL_GetDesktopDisplayMode(0, &dm) )
 		throw "SDL_GetDesktopDisplayMode(0, &dm) failed: SDL_GetError: " +
 			(std::string) SDL_GetError();
-	refresh_rate = dm->refresh_rate;
+	refresh_rate = dm.refresh_rate;
 
-	window = SDL_CreateWindow ( "gierka", 0, 0, 800, dm->h, 0);//SDL_WINDOW_SHOWN );
+	window = SDL_CreateWindow ( "gierka", 0, 0, 800, dm.h, 0);//SDL_WINDOW_SHOWN );
 	if( window == NULL )
 		throw "error SDL_CreateWindow; SDL_GetError():" +
 			(std::string) SDL_GetError();
@@ -42,7 +42,6 @@ Sdl_initializer::~Sdl_initializer() {
 	SDL_DestroyWindow( window );
 	renderer = NULL;
 	window = NULL;
-	dm = NULL;
 
 	IMG_Quit();
 	SDL_Quit();
