@@ -8,7 +8,7 @@ objs = $(addprefix $(BUILDDIR)/,$(srcs:.cpp=.o))
 deps = $(addprefix $(BUILDDIR)/,$(srcs:.cpp=.d))
 
 gra: $(objs)
-	$(CXX) -ggdb -lmcheck $^ -o $@ $(LIBS)
+	$(CXX) -ggdb $^ -o $@ $(LIBS)
 
 $(BUILDDIR)/%.o: %.cpp
 	$(CXX) $(CFLAGS) $< -o $@
