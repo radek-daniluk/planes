@@ -7,45 +7,74 @@
 #include "game.h"
 #include "application.h"
 
-Controls::Controls() { keys = SDL_GetKeyboardState(NULL);}
+Controls::Controls() { keys = SDL_GetKeyboardState(NULL); }
 
 Controls::~Controls() {}
 
-void Controls::eventLoop( Application & app, Game & game ) {
-	basic_events( app );
-	game_events( game );
+void Controls::gameEventLoop( Application & app, Game & game ) {
+
+	while( SDL_PollEvent( event ) ) {
+		basic_events( *event, app );
+		if( event->type == SDL_KEYDOWN )
+			if( event->key.keysym.sym == SDLK_ESCAPE )
+				app.state( paused );
+	}
+	game_controls( game );
 }
 
-void Controls::pauseEventLoop( Application & app ) {
-	basic_events( app );
-	std::this_thread::sleep_for( std::chrono::milliseconds( 50 ) );
+bool Controls::pauseEventLoop( Application & app, int sleep_time ) {
+	std::this_thread::sleep_for( std::chrono::milliseconds( sleep_time ) );
+
+	bool redraw = false;
+
+	while( SDL_PollEvent( event ) ) {
+		basic_events( *event, app );
+		redraw = pause_events( *event, app );
+	}
+	return redraw;
 }
 
-void Controls::basic_events( Application & app ) {
+void Controls::hiddenEventLoop( Application & app, int sleep_time ) {
+	std::this_thread::sleep_for( std::chrono::milliseconds( sleep_time ) );
 
-	while( SDL_PollEvent( &event ) ) {
-		switch( event.type ) {
-			case SDL_KEYDOWN:
-				switch( event.key.keysym.sym ) {
-					case SDLK_ESCAPE:
-						app.state( quit );
-						break;
-					case SDLK_p: // pause game
-						if      ( app.state() == paused )
-										app.state( running );
-						else if ( app.state() == running )
-										app.state( paused );
-						break;
-					} //swith event.key.keysym.sym
-					break; // SDL_KEYDOOWN
-			case SDL_QUIT:
-				app.state( quit );
-				break;
-		} // switch event.type
-	}//while PollEvent
+	while( SDL_PollEvent( event ) ) {
+		basic_events( *event, app );
+		hidden_events( *event, app );
+	}
 }
 
-void Controls::game_events( Game & game ) {
+void Controls::basic_events( SDL_Event & event, Application & app ) {
+
+	if( event.type == SDL_QUIT )
+		app.state( quit );
+	// TODO add OS events
+}
+
+void Controls::hidden_events( SDL_Event & event, Application & app ) {
+	if( event.type == SDL_WINDOWEVENT )
+		if( event.window.event == SDL_WINDOWEVENT_SHOWN )
+			app.state( paused );
+}
+
+bool Controls::pause_events( SDL_Event & event, Application & app ) {
+	bool toRedraw = false;
+	if( event.type == SDL_WINDOWEVENT ) {
+		if( event.window.event == SDL_WINDOWEVENT_HIDDEN ) {
+			app.state( hidden ); }
+		else if( event.window.event == SDL_WINDOWEVENT_EXPOSED ) {
+			toRedraw = true; }
+	}
+	else if( event.type == SDL_KEYDOWN ) {
+		if( event.key.keysym.sym == SDLK_ESCAPE || event.key.keysym.sym == SDLK_n ) {
+			app.state( running ); }
+		else if( event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_t ||
+				event.key.keysym.sym == SDLK_y ) {
+			app.state( quit ); }
+	}
+	return toRedraw;
+}
+
+void Controls::game_controls( Game & game ) {
 	auto & p = game.nonConstPlane();
 
 	// manage x axis movement

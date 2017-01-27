@@ -8,19 +8,22 @@ class Controls {
 
 	private:
 
-	SDL_Event event;
+	SDL_Event * event;
 	const Uint8 * keys;
 
-	void basic_events( Application & );
-	void game_events( Game & );
+	void basic_events( SDL_Event &, Application & );
+	void hidden_events( SDL_Event &, Application & );
+	bool pause_events( SDL_Event &, Application & );
+	void game_controls( Game & );
 
 	public:
 
 	Controls();
 	~Controls();
 
-	void eventLoop( Application&, Game& );
-	void pauseEventLoop( Application& );
+	void gameEventLoop( Application &, Game & );
+	bool pauseEventLoop( Application &, int sleep_time );
+	void hiddenEventLoop( Application &, int sleep_time );
 
 };
 

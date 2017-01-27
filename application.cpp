@@ -16,10 +16,10 @@ using std::cout;
 using std::endl;
 
 
-Application::Application( int debug, int loop_delay ) {
+Application::Application( int debug, int fps ) {
 	state_ = intro;
-	this->loop_delay = loop_delay;
-	vsync = !(bool)(loop_delay);
+	this->fps = fps;
+	vsync = !(bool)(fps);
 	this->debug = debug;
 
 	try{
@@ -42,8 +42,6 @@ Application::~Application() {
 
 int Application::startMainLoop ( void ) {
 
-	cout << std::setprecision(1) << std::fixed;
-
 	if( loadGame("test/2.game") ) {
 		std::cout << "Game loading error. Exiting" << std::endl;
 		return 2;
@@ -52,10 +50,10 @@ int Application::startMainLoop ( void ) {
 	state_ = running;
 
 	string sep = " \t";
+	cout << std::setprecision(1) << std::fixed;
+
 	std::array<TimeCount, 6> tc;
-
 	TimeLoop timeL;
-
 	TimeCount tcvsync;
 
 	while( state_ ) { // state_ != quit
@@ -71,15 +69,24 @@ int Application::startMainLoop ( void ) {
 				cout << "fps=" << 1.0/interval << " \t";
 		}
 
-		if( debug )
-			tc[0].start();
+		if( state_ == hidden ){
+			timeL.pause();
+			while( state_ == hidden )
+				controls->hiddenEventLoop( *this, 50 );
+			timeL.resume();
+		}
+
 		if( state_ == paused ){
 			timeL.pause();
 			while( state_ == paused )
-				controls->pauseEventLoop( *this ); //controls
+				if( controls->pauseEventLoop( *this, 50 ) )
+					graphics->update( *this, *gra );
 			timeL.resume();
 		}
-		controls->eventLoop( *this, *gra );
+
+		if( debug )
+			tc[0].start();
+		controls->gameEventLoop( *this, *gra );
 		if( debug ){
 			tc[0].stop();
 			if(debug > 1)
@@ -127,7 +134,7 @@ int Application::startMainLoop ( void ) {
 
 		if ( !vsync ) {
 			tcvsync.stop();
-			int delay = 1000000.0/loop_delay - tcvsync.last();
+			int delay = 1000000.0/fps - tcvsync.last();
 			std::this_thread::sleep_for( std::chrono::microseconds( delay ) );
 		}
 	}

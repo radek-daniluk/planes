@@ -16,15 +16,15 @@ class Application {
 	GraphicsSdl* graphics;
 	Controls* controls;
 	bool vsync;
-	int loop_delay{0}; //microseconds
-
+	int fps{0};
 	int debug{0};
 
 	int loadGame( std::string );
 
+
 	public:
 
-	Application( int debug = 0, int loop_delay = 0 );
+	Application( int debug = 0, int fps = 0 );
 	~Application();
 
 	int startMainLoop ( void );
