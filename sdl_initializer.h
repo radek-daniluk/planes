@@ -12,9 +12,9 @@ class Sdl_initializer {
 	int refresh_rate;
 
 	protected:
-	SDL_Renderer* renderer;
-	SDL_Window* window;
-	SDL_DisplayMode dm;
+	SDL_Renderer* renderer{NULL};
+	SDL_Window* window{NULL};
+	SDL_DisplayMode* dm{NULL};
 
 	public:
 	Sdl_initializer( bool vsync = true );

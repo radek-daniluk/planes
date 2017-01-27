@@ -53,7 +53,7 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 
 
 	int py = game.plane().y();
-	int offset = py + dm.h - game.plane().size();
+	int offset = py + dm->h - game.plane().size();
 
 	// fixed blobs
 	for( const auto & b : game.fblobs() ) {
@@ -143,10 +143,10 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 
 	if( app.state() == paused ) {
 		SDL_Rect rect;
-		rect.x = dm.w/4;
-		rect.y = dm.h/4;
-		rect.w = dm.w/2;
-		rect.h = dm.h/2;
+		rect.x = dm->w/4;
+		rect.y = dm->h/4;
+		rect.w = dm->w/2;
+		rect.h = dm->h/2;
 		SDL_SetRenderDrawColor( renderer, 0x40, 0x40, 0x40, 0xFF );
 		SDL_RenderFillRect( renderer, NULL );
 		SDL_RenderFillRect( renderer, &rect );
