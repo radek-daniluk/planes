@@ -14,10 +14,6 @@ int main(int argc, char** argv) {
 	int debug_app = 1;
 	int fps = 0;
 
-	cout << "arguments from CLI:" << endl;
-	for(int i=0; i<argc; i++)
-		cout << i << "=" << argv[i] << endl;
-
 	if (argc > 1) {
 		stringstream s( argv[1] );
 		s >> debug_app;
@@ -31,11 +27,7 @@ int main(int argc, char** argv) {
 			cout << "vsync disabled. fps=" << fps << "µs" << endl;
 	}
 
-
 	Application app( debug_app, fps );
-	// CLI arguments handling
-
-	//if ( initNewGame() ) { cerr << "initNewGame() error << endl; return 2; }
 	if ( app.startMainLoop() ) { cerr << "mainLoop() error" << endl; return 3; }
 
 	return 0;
