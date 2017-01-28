@@ -14,7 +14,7 @@ class Sdl_initializer {
 	protected:
 	SDL_Renderer* renderer;
 	SDL_Window* window;
-	SDL_DisplayMode dm;
+	SDL_DisplayMode dm{SDL_PIXELFORMAT_UNKNOWN,0,0,0,0};
 
 	public:
 	Sdl_initializer( bool vsync = true );
