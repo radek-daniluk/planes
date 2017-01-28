@@ -10,10 +10,10 @@ class Sdl_initializer {
 
 	private:
 	int refresh_rate{0};
-	int width{0};
-	int height{0};
 
 	protected:
+	int width{0};
+	int height{0};
 	SDL_Renderer* renderer;
 	SDL_Window* window;
 	SDL_DisplayMode dm{SDL_PIXELFORMAT_UNKNOWN,0,0,0,0};
