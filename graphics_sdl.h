@@ -35,7 +35,7 @@ class GraphicsSdl : public Sdl_initializer {
 
 	public:
 
-	GraphicsSdl( bool vsync = true );
+	GraphicsSdl( bool vsync = true, int width = 0, int height = 0 );
 	~GraphicsSdl() {}
 
 	void update( const Application &, const Game & );

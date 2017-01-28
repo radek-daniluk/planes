@@ -7,27 +7,37 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
-using std::stringstream;
+using std::istringstream;
 
 int main(int argc, char** argv) {
 
 	int debug_app = 1;
 	int fps = 0;
+	int width = 0;
+	int height = 0;
 
 	if (argc > 1) {
-		stringstream s( argv[1] );
+		istringstream s( argv[1] );
+		string token;
+		std::getline(s, token, 'x');
+		istringstream tok_s( token );
+		tok_s >> width;
+		s >> height;
+	}
+	if (argc > 2) {
+		istringstream s( argv[2] );
 		s >> debug_app;
 	}
 	cout << "debug=" << debug_app << endl;
 
-	if (argc > 2) {
-		stringstream s( argv[2] );
+	if (argc > 3) {
+		istringstream s( argv[3] );
 		s >> fps;
 		if( fps )
 			cout << "vsync disabled. fps=" << fps << "µs" << endl;
 	}
 
-	Application app( debug_app, fps );
+	Application app( width, height, debug_app, fps );
 	if ( app.startMainLoop() ) { cerr << "mainLoop() error" << endl; return 3; }
 
 	return 0;

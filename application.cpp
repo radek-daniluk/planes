@@ -16,14 +16,14 @@ using std::cout;
 using std::endl;
 
 
-Application::Application( int debug, int fps ) {
+Application::Application( int width, int height, int debug, int fps ) {
 	state_ = intro;
 	this->fps = fps;
 	vsync = !(bool)(fps);
 	this->debug = debug;
 
 	try{
-		graphics = new GraphicsSdl( vsync );
+		graphics = new GraphicsSdl( vsync, width, height );
 	}
 	catch (const char* s) {
 		if( SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", s, NULL) )

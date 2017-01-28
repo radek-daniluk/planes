@@ -3,7 +3,7 @@
 #include <string>
 #include "sdl_initializer.h"
 
-Sdl_initializer::Sdl_initializer( bool vsync ) {
+Sdl_initializer::Sdl_initializer( bool vsync, int win_width, int win_height ) {
 
 	if ( SDL_Init( SDL_INIT_VIDEO ) )
 		throw "SDL_Init(SDL_INIT_VIDEO) failed: SDL_GetError: " +
@@ -12,9 +12,23 @@ Sdl_initializer::Sdl_initializer( bool vsync ) {
 	if( SDL_GetDesktopDisplayMode(0, &dm) )
 		throw "SDL_GetDesktopDisplayMode(0, &dm) failed: SDL_GetError: " +
 			(std::string) SDL_GetError();
+
 	refresh_rate = dm.refresh_rate;
 
-	window = SDL_CreateWindow ( "gierka", 0, 0, 800, dm.h, 0);//SDL_WINDOW_SHOWN );
+	Uint32 win_flags = SDL_WINDOW_SHOWN;
+	int win_pos = SDL_WINDOWPOS_UNDEFINED;
+
+	if( win_width <=0 || win_height <= 0 ) {
+		win_flags = SDL_WINDOW_FULLSCREEN_DESKTOP;
+		width = dm.w;
+		height = dm.h;
+		win_pos = 0;
+	}else {
+		width = win_width;
+		height = win_height;
+	}
+
+	window = SDL_CreateWindow ( "gierka", win_pos, win_pos, width, height, win_flags);
 	if( window == NULL )
 		throw "error SDL_CreateWindow; SDL_GetError():" +
 			(std::string) SDL_GetError();

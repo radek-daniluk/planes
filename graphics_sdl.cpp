@@ -10,8 +10,8 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
-GraphicsSdl::GraphicsSdl( bool vsync ) :
-		Sdl_initializer( vsync ),
+GraphicsSdl::GraphicsSdl( bool vsync, int width, int height ) :
+		Sdl_initializer( vsync, width, height ),
 		mig29{ "img/mig29.png", renderer },
 		mig29_r{ "img/mig29_right.png", renderer },
 		mig29_l{ "img/mig29_left.png", renderer },

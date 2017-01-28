@@ -24,7 +24,7 @@ class Application {
 
 	public:
 
-	Application( int debug = 0, int fps = 0 );
+	Application( int width = 0, int height = 0, int debug = 0, int fps = 0 );
 	~Application();
 
 	int startMainLoop ( void );
