@@ -8,9 +8,6 @@
 
 class Sdl_initializer {
 
-	private:
-	int refresh_rate{0};
-
 	protected:
 	int width{0};
 	int height{0};
@@ -21,6 +18,10 @@ class Sdl_initializer {
 	public:
 	Sdl_initializer( bool vsync = true, int width = 0, int height = 0 );
 	~Sdl_initializer();
-	int refreshRate() const { return refresh_rate; };
+	Sdl_initializer( const Sdl_initializer & ) = delete;
+	Sdl_initializer & operator=( const Sdl_initializer & ) = delete;
+
+	int w() const { return width; }
+	int h() const { return height; }
 };
 #endif

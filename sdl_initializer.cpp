@@ -9,21 +9,21 @@ Sdl_initializer::Sdl_initializer( bool vsync, int win_width, int win_height ) {
 		throw "SDL_Init(SDL_INIT_VIDEO) failed: SDL_GetError: " +
 			(std::string) SDL_GetError();
 
+	// get info about desktop screen resolution and store it in dm
 	if( SDL_GetDesktopDisplayMode(0, &dm) )
 		throw "SDL_GetDesktopDisplayMode(0, &dm) failed: SDL_GetError: " +
 			(std::string) SDL_GetError();
 
-	refresh_rate = dm.refresh_rate;
-
+	//defaults for windowed mode
 	Uint32 win_flags = SDL_WINDOW_SHOWN;
 	int win_pos = SDL_WINDOWPOS_UNDEFINED;
 
-	if( win_width <=0 || win_height <= 0 ) {
+	if( win_width <=0 || win_height <= 0 ) { // if fullscreen mode
 		win_flags = SDL_WINDOW_FULLSCREEN_DESKTOP;
 		width = dm.w;
 		height = dm.h;
 		win_pos = 0;
-	}else {
+	}else { // if windowed mode
 		width = win_width;
 		height = win_height;
 	}
@@ -42,7 +42,7 @@ Sdl_initializer::Sdl_initializer( bool vsync, int win_width, int win_height ) {
 		throw "error SDL_CreateRenderer; SDL_GetError():" +
 			(std::string) SDL_GetError();
 
-	//Initialize PNG loading
+	//Initialize PNG,JPG... formats loading
 	int imgFlags = IMG_INIT_PNG;
 	if( !( IMG_Init( imgFlags ) & imgFlags ) )
 		throw "SDL_image could not initialize! SDL_image Error: " +
