@@ -79,26 +79,26 @@ void Game::collisions( double interval ) {
 
 	for( const auto & b : blobs_ ) {
 		if( plane_.distance(b) < 0 ) {
-			tblobs_.push_back( Blob2d_temp<NUM>( (Blob2d<NUM>)plane_, 0.5 ) );
+			tblobs_.emplace_back( (Blob2d<NUM>)plane_, 0.5 );
 		}
 	}
 
 	for( auto it = bullets_.begin(); it != bullets_.end(); ++it)
 		for( const auto & b : blobs_ )
 			if( it->distance(b) < 0 ) {
-				tblobs_.push_back( Blob2d_temp<NUM>( b, 0.5 ) ); // add explosion
+				tblobs_.emplace_back( b, 0.5 ); // add explosion
 				//add wreckage
-				wreckage_.push_back( Blob2d_temp<NUM>( *it, 1.2 ) );
+				wreckage_.emplace_back( *it, 1.2 );
 				( wreckage_.end() - 1 )->xAdd( 40 );
 				( wreckage_.end() - 1 )->yAdd( -20 );
 				( wreckage_.end() - 1 )->speedX( 20 );
 				( wreckage_.end() - 1 )->radius( 15 );
-				wreckage_.push_back( Blob2d_temp<NUM>( b, 0.9 ) );
+				wreckage_.emplace_back( b, 0.9 );
 				( wreckage_.end() - 1 )->xAdd( 0 );
 				( wreckage_.end() - 1 )->yAdd( -20 );
 				( wreckage_.end() - 1 )->accel( -100, 500, interval );
 				( wreckage_.end() - 1 )->radius( 15 );
-				wreckage_big.push_back( Blob2d_temp<NUM>( b, 0.6 ) );
+				wreckage_big.emplace_back( b, 0.6 );
 				( wreckage_big.end() - 1 )->yAdd( 10 );
 				( wreckage_big.end() - 1 )->speedX( -10 );
 				( wreckage_big.end() - 1 )->radius( 40 );
@@ -111,10 +111,10 @@ void Game::collisions( double interval ) {
 void Game::addBullet() {
 
 	if( plane_.reloaded() ) {
-		bullets_.push_back( Blob2d_temp<NUM>(
+		bullets_.emplace_back(
 			plane_.x(), plane_.y() + plane_.radius(), // x, y
 			12, 0.7, //size, time to live
-			0, plane_.speedY() + 1000 ) ); //velocity x, velocity y
+			0, plane_.speedY() + 1000 ); //velocity x, velocity y
 		plane_.fire();
 	}
 }
@@ -149,11 +149,11 @@ std::istream & operator>>( std::istream & is, Game & g) {
 		is >> c;
 		if( ! is.eof() ) {
 			if(c == 'f')
-				g.fblobs_.push_back( Blob2d_fix<NUM>( is ) );
+				g.fblobs_.emplace_back( is );
 			else if(c == 'm')
-				g.blobs_.push_back( Blob2d<NUM>( is ) );
+				g.blobs_.emplace_back( is );
 			else if(c == 't')
-				g.tblobs_.push_back( Blob2d_temp<NUM>( is ) );
+				g.tblobs_.emplace_back( is );
 			else
 				throw "operator>>( istream &, Game & ) failed: unknown blob type";
 		}
