@@ -2,6 +2,7 @@
 #include <iterator>
 #include <algorithm>
 #include "game.h"
+#include "exceptions.h" // FileExcept
 
 Game::Game( std::istream & is, NUM speed ) : speed_(speed) {
 	is >> *this;
@@ -155,7 +156,7 @@ std::istream & operator>>( std::istream & is, Game & g) {
 			else if(c == 't')
 				g.tblobs_.emplace_back( is );
 			else
-				throw "operator>>( istream &, Game & ) failed: unknown blob type";
+				throw FileExcept( "operator>>( istream &, Game & ) failed: unknown blob type" );
 		}
 	}
 
@@ -164,7 +165,7 @@ std::istream & operator>>( std::istream & is, Game & g) {
 	if( g.check_game_format() )
 		std::cout << "Game format OK" << std::endl;
 	else
-		throw "Game failed to load";
+		throw FileExcept( "Game failed to load" );
 
 	g.to_active_fix = g.from_active_fix = g.fblobs_.begin();
 	g.to_active_blob = g.from_active_blob = g.blobs_.begin();

@@ -108,7 +108,7 @@ template <typename T>
 void Blob2d_shoot<T>::load_blob_els( istream & is ) {
 
 	if( ! (is >> reload_time_ >> to_reload_ ) )
-	throw "Loading Blob2d_shoot<T> elements failed";
+	throw FileExcept( "Loading Blob2d_shoot<T> elements failed" );
 }
 
 // Extraction operator gets all elements from the input stream and assings its

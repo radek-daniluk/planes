@@ -81,7 +81,7 @@ Blob2d_temp<T>::Blob2d_temp( std::istream & is ) : Blob2d<T>( is ) {
 template <typename T>
 void Blob2d_temp<T>::load_blob_els( istream & is ) {
 	if( ! (is >> ttl_start >> ttl_ ) )
-		throw "Loading Blob2d_temp<T> elements failed";
+		throw FileExcept( "Loading Blob2d_temp<T> elements failed" );
 }
 
 template <typename T>

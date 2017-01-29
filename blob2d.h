@@ -187,14 +187,13 @@ void Blob2d<T>::load_blob_els( istream & is ) {
 
 	if( ! (is >> velocity_x_ >> velocity_y_ >> angle_
 			>> max_x_ >> min_x_ >> max_y_ >> min_y_) )
-	throw "Loading Blob2d<T> elements failed";
+	throw FileExcept( "Loading Blob2d<T> elements failed" );
 }
 
 // Extraction operator gets all elements from the input stream and assings its
 // value to object's varibles. It is intended to be used with strings
 // created by << operator (e.g. load<->save). Numbers should be separated
 // only with white spaces.
-// On error it throws const char* "Operator>>( istream &, Blob2d<T> &) failed".
 template <typename T>
 istream & operator>>( istream & is, Blob2d<T> & b ) {
 
