@@ -61,8 +61,6 @@ Sdl_initializer::Sdl_initializer( bool vsync, int win_width, int win_height ) {
 		throw SdlExcept( "SDL_image could not initialize! SDL_image Error: " +
 			(std::string) IMG_GetError() );
 	}
-
-	SDL_SetRenderDrawBlendMode( renderer, SDL_BLENDMODE_MOD );
 }
 
 Sdl_initializer::~Sdl_initializer() {

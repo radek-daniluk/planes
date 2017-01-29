@@ -84,37 +84,39 @@ int Application::startMainLoop ( void ) {
 			timeL.resume();
 		}
 
-		if( debug )
-			tc[0].start();
-		controls->gameEventLoop( *this, *gra );
-		if( debug ){
-			tc[0].stop();
-			if(debug > 1)
-				cout << tc[0].last() << sep;}
+		if( state_ == running ) { // update game mechanics while running
+			if( debug )
+				tc[0].start();
+			controls->gameEventLoop( *this, *gra );
+			if( debug ){
+				tc[0].stop();
+				if(debug > 1)
+					cout << tc[0].last() << sep;}
 
-		if( debug )
-			tc[1].start();
-		gra->nextStep( interval );
-		if( debug ){
-			tc[1].stop();
-			if(debug > 1)
-				cout << tc[1].last() << sep;}
+			if( debug )
+				tc[1].start();
+			gra->nextStep( interval );
+			if( debug ){
+				tc[1].stop();
+				if(debug > 1)
+					cout << tc[1].last() << sep;}
 
-		if( debug )
-			tc[2].start();
-		gra->updateActive();
-		if( debug ){
-			tc[2].stop();
-			if(debug > 1)
-				cout << tc[2].last() << sep;}
+			if( debug )
+				tc[2].start();
+			gra->updateActive();
+			if( debug ){
+				tc[2].stop();
+				if(debug > 1)
+					cout << tc[2].last() << sep;}
 
-		if( debug )
-			tc[3].start();
-		gra->collisions( interval );
-		if( debug ){
-			tc[3].stop();
-			if(debug > 1)
-				cout << tc[3].last() << sep;}
+			if( debug )
+				tc[3].start();
+			gra->collisions( interval );
+			if( debug ){
+				tc[3].stop();
+				if(debug > 1)
+					cout << tc[3].last() << sep;}
+		}// if ( state_ == running )
 
 		if( debug && !vsync )
 			tc[5].start();

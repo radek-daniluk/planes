@@ -142,6 +142,7 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 	}
 
 	if( app.state() == paused ) {
+		SDL_SetRenderDrawBlendMode( renderer, SDL_BLENDMODE_MOD );
 		SDL_Rect rect;
 		rect.x = width/4;
 		rect.y = height/4;
@@ -150,7 +151,7 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 		SDL_SetRenderDrawColor( renderer, 0x40, 0x40, 0x40, 0xFF );
 		SDL_RenderFillRect( renderer, NULL );
 		SDL_RenderFillRect( renderer, &rect );
-
+		SDL_SetRenderDrawBlendMode( renderer, SDL_BLENDMODE_BLEND );
 	}
 
 
