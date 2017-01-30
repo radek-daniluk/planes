@@ -35,7 +35,7 @@ class GraphicsSdl : public Sdl_initializer {
 
 	public:
 
-	GraphicsSdl( bool vsync = true, int width = 0, int height = 0 );
+	explicit GraphicsSdl( std::string title, int width = 0, int height = 0, bool vsync = true );
 	~GraphicsSdl() {}
 
 	void update( const Application &, const Game & );

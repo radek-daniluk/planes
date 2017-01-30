@@ -23,7 +23,7 @@ Application::Application( int width, int height, int debug, int fps ) {
 	this->debug = debug;
 
 	try{
-		graphics = new GraphicsSdl( vsync, width, height );
+		graphics = new GraphicsSdl( "no title yet", width, height, vsync );
 	}
 	catch (const char* s) {
 		if( SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", s, NULL) )
@@ -178,13 +178,17 @@ int Application::startMainLoop ( void ) {
 int Application::loadGame( std::string file_name ) {
 
 	std::ifstream fs( file_name );
+	if( !fs.good() ) // return 1 on file opening error
+		return 1;
+
 	try{
 		gra = new Game( fs, 1.0 );
 	}
-	catch (const char* s) {
-		std::cout << s << " from file:\"" << file_name << "\"" << std::endl;
-		fs.close();
-		return 1;
+	catch ( FileExcept e ) {
+		if( SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "File error",
+			"File: is missing. Please reinstall the program.", graphics->win() ) )
+			std::cout << e.what() << " from file:\"" << file_name << "\"" << std::endl;
+		return 2;
 	}
 
 	fs.close();
