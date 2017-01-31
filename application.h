@@ -2,7 +2,9 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include <exception> //std::exception
+#include <exception>
+#include <string>
+#include <memory> //std::unique_ptr
 #include "common.h"
 #include "game.h"
 #include "graphics_sdl.h"
@@ -10,13 +12,14 @@
 #include "exceptions.h"
 
 class Application {
-
-	private:
+	using GfxPtr = std::unique_ptr<GraphicsSdl> ;
+	using CtrlPtr = std::unique_ptr<Controls>;
+	using GamePtr = std::unique_ptr<Game>;
 
 	AppState state_;
-	Game* gra;
-	GraphicsSdl* graphics;
-	Controls* controls;
+	GamePtr gra;
+	GfxPtr gfx;
+	CtrlPtr ctrl;
 	bool vsync;
 	int fps{0};
 	int debug{0};
@@ -28,7 +31,7 @@ class Application {
 	public:
 
 	Application( int width = 0, int height = 0, int debug = 0, int fps = 0 );
-	~Application();
+	~Application() {};
 
 	int startMainLoop ( void );
 	AppState state() const { return state_; }

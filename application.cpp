@@ -1,10 +1,10 @@
 //application.cpp
 #include <iostream>
-#include <iomanip>
-#include <fstream>
+#include <iomanip> // std::setprecision, std::fixed
+#include <fstream> // std::ifstream
 #include <array>
-#include <thread>
-#include <chrono>
+#include <thread> // std::this_thread::sleep_for
+#include <chrono> // std::chrono::microseconds
 
 #include "application.h"
 #include "controls.h"
@@ -23,20 +23,14 @@ Application::Application( int width, int height, int debug, int fps ) {
 	this->debug = debug;
 
 	try{
-		graphics = new GraphicsSdl( "no title yet", width, height, vsync );
+		gfx = GfxPtr(new GraphicsSdl( "no title yet", width, height, vsync ) );
 	}
 	catch( SdlErr & e ) { show_err(e); exit(1); }
 	catch( SdlImgErr & e ) { show_err(e); exit(1); }
 	catch( FileErr & e ) { show_err(e); exit(1); }
 	catch( std::exception & e ) { show_err(e); exit(1); }
 
-	controls = new Controls();
-}
-
-Application::~Application() {
-	//delete gra;
-	delete controls;
-	delete graphics;
+	ctrl = CtrlPtr( new Controls() );
 }
 
 int Application::startMainLoop ( void ) {
@@ -71,22 +65,22 @@ int Application::startMainLoop ( void ) {
 		if( state_ == hidden ){
 			timeL.pause();
 			while( state_ == hidden )
-				controls->hiddenEventLoop( *this, 50 );
+				ctrl->hiddenEventLoop( *this, 50 );
 			timeL.resume();
 		}
 
 		if( state_ == paused ){
 			timeL.pause();
 			while( state_ == paused )
-				if( controls->pauseEventLoop( *this, 50 ) )
-					graphics->update( *this, *gra );
+				if( ctrl->pauseEventLoop( *this, 50 ) )
+					gfx->update( *this, *gra );
 			timeL.resume();
 		}
 
 		if( state_ == running ) { // update game mechanics while running
 			if( debug )
 				tc[0].start();
-			controls->gameEventLoop( *this, *gra );
+			ctrl->gameEventLoop( *this, *gra );
 			if( debug ){
 				tc[0].stop();
 				if(debug > 1)
@@ -119,7 +113,7 @@ int Application::startMainLoop ( void ) {
 
 		if( debug && !vsync )
 			tc[5].start();
-		graphics->clear();
+		gfx->clear();
 		if( debug && !vsync ) {
 			tc[5].stop();
 			if(debug > 1)
@@ -127,7 +121,7 @@ int Application::startMainLoop ( void ) {
 
 		if( debug )
 			tc[4].start();
-		graphics->update( *this, *gra );
+		gfx->update( *this, *gra );
 		if( debug ) {
 			tc[4].stop();
 			if(debug > 1)
@@ -168,9 +162,6 @@ int Application::startMainLoop ( void ) {
 				total += t.sum();
 		cout << total/1000000 << " s" << endl;
 	}
-
-	delete gra;
-
 	return 0;
 }
 
@@ -181,11 +172,11 @@ int Application::loadGame( const std::string & file_name ) {
 		return 1;
 
 	try{
-		gra = new Game( fs, 1.0 );
+		gra = GamePtr( new Game( fs, 1.0 ) );
 	}
 	catch ( FileErr e ) {
 		if( SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "File error",
-			"File: is missing. Please reinstall the program.", graphics->win() ) )
+			"File: is missing. Please reinstall the program.", gfx->win() ) )
 			std::cout << e.what() << " from file:\"" << file_name << "\"" << std::endl;
 		return 2;
 	}
