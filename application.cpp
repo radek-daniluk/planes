@@ -15,7 +15,6 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
-
 Application::Application( int width, int height, int debug, int fps ) {
 	state_ = intro;
 	this->fps = fps;
@@ -25,10 +24,8 @@ Application::Application( int width, int height, int debug, int fps ) {
 	try{
 		gfx = GfxPtr(new GraphicsSdl( "no title yet", width, height, vsync ) );
 	}
-	catch( SdlErr & e ) { show_err(e); exit(1); }
-	catch( SdlImgErr & e ) { show_err(e); exit(1); }
-	catch( FileErr & e ) { show_err(e); exit(1); }
-	catch( std::exception & e ) { show_err(e); exit(1); }
+	catch( SdlErr & e ) { show_err( e.what() ); exit(EXIT_FAILURE); }
+	catch( SdlImgErr & e ) { show_err( e.what() ); exit(EXIT_FAILURE); }
 
 	ctrl = CtrlPtr( new Controls() );
 }
@@ -36,8 +33,7 @@ Application::Application( int width, int height, int debug, int fps ) {
 int Application::startMainLoop ( void ) {
 
 	if( loadGame("test/2.game") ) {
-		std::cout << "Game loading error. Exiting" << std::endl;
-		return 2;
+		return -1;
 	}
 
 	state_ = running;
@@ -138,7 +134,7 @@ int Application::startMainLoop ( void ) {
 		cout << "Execution times summary" << endl;
 		cout << "  \tcontrl\tnextStp\tactive\tcollis\trender\tclear";
 		if( vsync )
-			cout << "-N/A(vsync)";
+			cout << "<-clear N/A(vsync)";
 
 		cout << endl << "min";
 		for( auto & t : tc )
@@ -168,24 +164,22 @@ int Application::startMainLoop ( void ) {
 int Application::loadGame( const std::string & file_name ) {
 
 	std::ifstream fs( file_name );
-	if( !fs.good() ) // return 1 on file opening error
-		return 1;
+	if( !fs.good() ) {
+		show_err( "Cannot open file:'" + file_name + "' It is probably missing\n"
+			+ s_err );
+		return -1;
+	}
 
 	try{
 		gra = GamePtr( new Game( fs, 1.0 ) );
 	}
-	catch ( FileErr e ) {
-		if( SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "File error",
-			"File: is missing. Please reinstall the program.", gfx->win() ) )
-			std::cout << e.what() << " from file:\"" << file_name << "\"" << std::endl;
-		return 2;
+	catch ( FileErr e ) { show_err( string("File:'") + file_name
+		+ "' is probably corrupted;\n" + s_err + "\n" + e.what() ); return -1;
 	}
-
-	fs.close();
 	return 0;
 }
 
-void Application::show_err( const std::exception & e ) {
-	if( SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", e.what(), NULL) )
-		cout << e.what() << endl;
+void Application::show_err( const char * s) {
+	if( SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", s, NULL) )
+		cout << s << endl;
 }

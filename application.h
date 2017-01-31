@@ -2,7 +2,6 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include <exception>
 #include <string>
 #include <memory> //std::unique_ptr
 #include "common.h"
@@ -15,6 +14,7 @@ class Application {
 	using GfxPtr = std::unique_ptr<GraphicsSdl> ;
 	using CtrlPtr = std::unique_ptr<Controls>;
 	using GamePtr = std::unique_ptr<Game>;
+	const std::string s_err = "Reinstallation may resolve this problem.";
 
 	AppState state_;
 	GamePtr gra;
@@ -25,7 +25,8 @@ class Application {
 	int debug{0};
 
 	int loadGame( const std::string & );
-	void show_err( const std::exception & );
+	void show_err( const char* );
+	void show_err( const std::string & s ) { show_err( s.c_str() ); }
 
 
 	public:

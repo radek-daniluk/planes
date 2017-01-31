@@ -23,7 +23,8 @@ SDL_Texture * Sprite::load_texture( std::string path, SDL_Renderer * renderer ) 
 
 	SDL_Surface* loaded_surface = IMG_Load( path.c_str() );
 	if( loaded_surface == NULL )
-		throw SdlImgErr( "sprite.h:load_texture:Unable to load image file:'" + path + "'" );
+		throw SdlImgErr( "File is missing or corrupted:'" + path + "'\n"
+			+ "sprite.h:load_texture" );
 	else {
 		new_texture = SDL_CreateTextureFromSurface( renderer, loaded_surface );
 		if( new_texture == NULL )
