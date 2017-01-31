@@ -130,33 +130,30 @@ int Application::startMainLoop ( void ) {
 		}
 	}
 
+	// Display table summarising execution times counted by TimeCount's in tc arr
 	if( debug ) {
 		cout << "Execution times summary" << endl;
-		cout << "  \tcontrl\tnextStp\tactive\tcollis\trender\tclear";
+		cout << "  \tctrl\tnextStp\tactive\tcollis\trender\tclear";
 		if( vsync )
 			cout << "<-clear N/A(vsync)";
+		cout << endl;
 
-		cout << endl << "min";
-		for( auto & t : tc )
-			cout << sep << t.min();
-
-		cout << " [µs]" << endl << "mean";
-		for( auto & t : tc )
-			cout << sep << t.mean();
-
-		cout << " [µs]" << endl << "max";
-		for( auto & t : tc )
-			cout << sep << t.max();
-
-		cout << " [µs]" << endl << "sum";
-		for( auto & t : tc )
-			cout << sep << t.sum()/1000;
-
-		cout << " [ms]" << endl << "total: ";
+		std::vector<string> labels{"min","mean","max","sum"};
+		std::vector<string> units {"µs", "µs",  "µs", "ms" };
+		std::vector<int> divisors { 1,    1,     1,   1000 };
+		using T = TimeCount;
+		std::vector<double(T::*)()const> func{ &T::min, &T::mean, &T::max, &T::sum };
 		float total = 0;
-			for( auto& t : tc )
+
+		for( int i=0; i<(int)labels.size(); i++ ) {
+			cout << labels[i];
+			for( auto & t : tc ) {
+				cout << sep << (t.*func[i])()/divisors[i];
 				total += t.sum();
-		cout << total/1000000 << " s" << endl;
+			}
+			cout << " [" << units[i] << "]" << endl;
+		}
+		cout << "total " << total/1000000 << "[s]" << endl;
 	}
 	return 0;
 }
