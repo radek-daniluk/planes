@@ -106,7 +106,7 @@ ostream & operator<<( ostream & os, const Blob2d_fix<T> & b ) {
 template <typename T>
 void Blob2d_fix<T>::load_blob_els( istream & is ) {
 	if( ! ( is >> x_ >> y_ >> radius_ >> active_ ) )
-		throw FileExcept( "Loading Blob2d_fix<T> elements failed" );
+		throw FileErr( "Loading Blob2d_fix<T> elements failed" );
 }
 
 // Extraction operator gets numerics from the input stream and assings its

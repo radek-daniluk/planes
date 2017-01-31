@@ -16,8 +16,7 @@ class Sdl_init {
 		if ( SDL_Init( flags ) ) {
 			std::istringstream s;
 			s >> flags;
-			throw SdlExcept( "SDL_Init(" + s.str() + ") failed: SDL_GetError: "
-			+ (string) SDL_GetError() );
+			throw SdlErr( "SDL_Init(" + s.str() + ")@sdl_initializer.h" );
 		}
 	}
 	~Sdl_init() { SDL_Quit(); }
@@ -29,8 +28,7 @@ class Img_init {
 		if( !( IMG_Init( flags ) & flags ) ) {
 			std::istringstream s;
 			s >> flags;
-			throw SdlExcept("IMG_Init(" + s.str() + ") failed: IMG_GetError: "
-			+ (string) IMG_GetError() );
+			throw SdlImgErr( "IMG_Init(" + s.str() + ")@sdl_initialize.h" );
 		}
 	}
 	~Img_init() { IMG_Quit(); }

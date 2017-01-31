@@ -187,7 +187,7 @@ void Blob2d<T>::load_blob_els( istream & is ) {
 
 	if( ! (is >> velocity_x_ >> velocity_y_ >> angle_
 			>> max_x_ >> min_x_ >> max_y_ >> min_y_) )
-	throw FileExcept( "Loading Blob2d<T> elements failed" );
+	throw FileErr( "Loading Blob2d<T> elements failed" );
 }
 
 // Extraction operator gets all elements from the input stream and assings its

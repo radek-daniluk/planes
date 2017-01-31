@@ -2,16 +2,32 @@
 #ifndef EXCEPTIONS_H
 #define EXCEPTIONS_H
 
+#include <SDL2/SDL.h>	// SDL_GetError()
+#include <SDL2/SDL_image.h> // IMG_GetError()
 #include <stdexcept> //std::runtime_error
-#include <ios>		//std::ios_base::failure
+#include <string>
 
-class SdlExcept : public std::runtime_error {
+using std::string;
+using std::runtime_error;
+
+class SdlErr : public runtime_error {
 public:
-  SdlExcept( const std::string & s ) : std::runtime_error( s ) { }
+	SdlErr( const string & s )
+	: runtime_error( s + string( "; SDL_GetError:'" ) + string( SDL_GetError() )
+	+  string( "'" ) ) {}
 };
 
-class FileExcept : public std::ios_base::failure {
+class SdlImgErr : public runtime_error {
 public:
-  FileExcept( const std::string & s ) : std::ios_base::failure( s ) { }
+	SdlImgErr( const string & s )
+	: runtime_error( s + string( "; IMG_GetError:'" ) + string( IMG_GetError() )
+	+  string( "'" ) ) {}
+};
+
+class FileErr : public runtime_error {
+public:
+	string path;
+	FileErr( const string & s, const string & p = "unknown" ) :
+		runtime_error( s ), path(p) {}
 };
 #endif

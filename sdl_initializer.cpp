@@ -8,8 +8,7 @@ Sdl_initializer::Sdl_initializer( string title, int win_width, int win_height,
 {
 	// get info about desktop screen and store it in dm structure
 	if( SDL_GetDesktopDisplayMode(0, &dm) )
-		throw SdlExcept( "SDL_GetDesktopDisplayMode(0, &dm) failed: SDL_GetError: "
-			+ (std::string) SDL_GetError() );
+		throw SdlErr( "SDL_GetDesktopDisplayMode(0, &dm)@Sdl_initializer.cpp" );
 
 	// SDL window
 	Uint32 flags = SDL_WINDOW_SHOWN; // default flags for windowed mode
@@ -25,8 +24,7 @@ Sdl_initializer::Sdl_initializer( string title, int win_width, int win_height,
 	}
 	window = SDL_CreateWindow ( title.c_str(), win_pos, win_pos, width, height, flags );
 	if( window == NULL ) // on error
-		throw SdlExcept( "error SDL_CreateWindow; SDL_GetError():"
-			+ (string) SDL_GetError() );
+		throw SdlErr( "SDL_CreateWindow(title.c_str(),win_pos,win_pos,width,height,flags )@Sdl_initializer.cpp");
 
 	// SDL renderer
 	flags = 0; // default renderer flags for windowed mode
@@ -35,8 +33,7 @@ Sdl_initializer::Sdl_initializer( string title, int win_width, int win_height,
 	rend = SDL_CreateRenderer( window, -1, flags );
 	if( rend == NULL ) { // on error
 		SDL_DestroyWindow( window ); // revert window creation
-		throw SdlExcept( "error SDL_CreateRenderer; SDL_GetError():"
-		+ (string) SDL_GetError() );
+		throw SdlErr( "SDL_CreateRenderer(window,-1,flags)@Sdl_initializer.cpp" );
 	}
 }
 

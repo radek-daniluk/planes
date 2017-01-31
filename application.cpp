@@ -184,7 +184,7 @@ int Application::loadGame( std::string file_name ) {
 	try{
 		gra = new Game( fs, 1.0 );
 	}
-	catch ( FileExcept e ) {
+	catch ( FileErr e ) {
 		if( SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "File error",
 			"File: is missing. Please reinstall the program.", graphics->win() ) )
 			std::cout << e.what() << " from file:\"" << file_name << "\"" << std::endl;

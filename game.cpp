@@ -1,6 +1,6 @@
 //game.cpp
 #include <iterator>
-#include <algorithm>
+#include <algorithm> // std::is_sorted
 #include "game.h"
 #include "exceptions.h" // FileExcept
 
@@ -156,16 +156,18 @@ std::istream & operator>>( std::istream & is, Game & g) {
 			else if(c == 't')
 				g.tblobs_.emplace_back( is );
 			else
-				throw FileExcept( "operator>>( istream &, Game & ) failed: unknown blob type" );
+				throw FileErr( "game.cpp:operator>>( istream &, Game & ): unknown blob type" );
 		}
 	}
 
 	if( is.eof() )
 		std::cout << "Game data loaded. Checking data..." << std::endl;
+	else
+		throw FileErr( "game.cpp:operator>>:eof not reached - it is bad" );
 	if( g.check_game_format() )
 		std::cout << "Game format OK" << std::endl;
 	else
-		throw FileExcept( "Game failed to load" );
+		throw FileErr( "game.cpp:operator>>:check_game_format failed" );
 
 	g.to_active_fix = g.from_active_fix = g.fblobs_.begin();
 	g.to_active_blob = g.from_active_blob = g.blobs_.begin();
