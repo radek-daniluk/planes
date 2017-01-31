@@ -1,12 +1,11 @@
+//gra.cpp
 #include <iostream>
-#include <sstream>
-
+#include <sstream> //std::istringstream
 #include "application.h"
 
 using std::cerr;
 using std::cout;
 using std::endl;
-
 using std::istringstream;
 
 int main(int argc, char** argv) {
@@ -16,6 +15,7 @@ int main(int argc, char** argv) {
 	int width = 0;
 	int height = 0;
 
+	// parse window size in format 800x600
 	if (argc > 1) {
 		istringstream s( argv[1] );
 		string token;
@@ -23,13 +23,13 @@ int main(int argc, char** argv) {
 		istringstream tok_s( token );
 		tok_s >> width;
 		s >> height;
-	}
+	}// debug level
 	if (argc > 2) {
 		istringstream s( argv[2] );
 		s >> debug_app;
 	}
 	cout << "debug=" << debug_app << endl;
-
+	// if fps == 0 enable vsync
 	if (argc > 3) {
 		istringstream s( argv[3] );
 		s >> fps;
