@@ -2,10 +2,12 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
+#include <exception> //std::exception
 #include "common.h"
 #include "game.h"
 #include "graphics_sdl.h"
 #include "controls.h"
+#include "exceptions.h"
 
 class Application {
 
@@ -19,7 +21,8 @@ class Application {
 	int fps{0};
 	int debug{0};
 
-	int loadGame( std::string );
+	int loadGame( const std::string & );
+	void show_err( const std::exception & );
 
 
 	public:

@@ -25,11 +25,10 @@ Application::Application( int width, int height, int debug, int fps ) {
 	try{
 		graphics = new GraphicsSdl( "no title yet", width, height, vsync );
 	}
-	catch (const char* s) {
-		if( SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", s, NULL) )
-			cout << s << endl;
-		exit(1);
-	}
+	catch( SdlErr & e ) { show_err(e); exit(1); }
+	catch( SdlImgErr & e ) { show_err(e); exit(1); }
+	catch( FileErr & e ) { show_err(e); exit(1); }
+	catch( std::exception & e ) { show_err(e); exit(1); }
 
 	controls = new Controls();
 }
@@ -175,7 +174,7 @@ int Application::startMainLoop ( void ) {
 	return 0;
 }
 
-int Application::loadGame( std::string file_name ) {
+int Application::loadGame( const std::string & file_name ) {
 
 	std::ifstream fs( file_name );
 	if( !fs.good() ) // return 1 on file opening error
@@ -195,3 +194,7 @@ int Application::loadGame( std::string file_name ) {
 	return 0;
 }
 
+void Application::show_err( const std::exception & e ) {
+	if( SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", e.what(), NULL) )
+		cout << e.what() << endl;
+}
