@@ -70,8 +70,10 @@ int Application::startMainLoop ( void ) {
 		if( state_ == paused ){
 			timeL.pause();
 			while( state_ == paused )
-				if( ctrl->pauseEventLoop( *this, 50 ) )
+				if( ctrl->pauseEventLoop( *this, 50 ) ) {
+					gfx->clear();
 					gfx->update( *this, *gra );
+				}
 			timeL.resume();
 		}
 
