@@ -62,7 +62,6 @@ class Game {
 	Blob2d<NUM> & blob( int n ) { return blobs_[n]; }
 
 	const auto & plane() const { return plane_; }
-	auto & plane() { return plane_; }
 	auto & nonConstPlane() { return plane_; }
 
 	friend istream & operator>>(istream &, Game &);
