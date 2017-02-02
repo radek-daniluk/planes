@@ -40,7 +40,7 @@ GraphicsSdl::GraphicsSdl( std::string title, int width, int height, bool vsync )
 }
 
 void GraphicsSdl::clear() {
-	SDL_SetRenderDrawColor( rend, 0x5C, 0xDF, 0x46, 0xFF );
+	SDL_SetRenderDrawColor( rend, 0x44, 0x88, 0xAA, 0xFF );
 	SDL_RenderClear( rend );
 }
 
@@ -102,7 +102,7 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 		bullet.h( b.size() );
 		bullet.w( b.size() / 2 );
 
-		SDL_SetRenderDrawColor( rend, 0xFF, 0x00, 0x00, 0xFF );
+		SDL_SetRenderDrawColor( rend, 0xFF, 0x40, 0x00, 0xFF );
 		SDL_RenderFillRect( rend , bullet.rect() );
 		//SDL_RenderCopy( rend, bullet.texture() , NULL, bullet.rect() );
 	}
@@ -140,6 +140,7 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 		SDL_RenderCopy( rend, expl[spr].texture(),
 				NULL, expl[spr].rect() );
 	}
+	SDL_RenderPresent( rend );
 
 	if( app.state() == paused ) {
 		SDL_SetRenderDrawBlendMode( rend, SDL_BLENDMODE_MOD );
@@ -151,7 +152,7 @@ void GraphicsSdl::update( const Application & app, const Game & game ) {
 		SDL_SetRenderDrawColor( rend, 0x40, 0x40, 0x40, 0xFF );
 		SDL_RenderFillRect( rend, NULL );
 		SDL_RenderFillRect( rend, &rect );
-		SDL_SetRenderDrawBlendMode( rend, SDL_BLENDMODE_BLEND );
+		SDL_SetRenderDrawBlendMode( rend, SDL_BLENDMODE_NONE );
 	}
 
 
