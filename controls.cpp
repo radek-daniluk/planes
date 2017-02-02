@@ -35,14 +35,14 @@ void Controls::gameEventLoop( Application & app, Game & game ) {
 bool Controls::pauseEventLoop( Application & app, int sleep_time ) {
 	std::this_thread::sleep_for( std::chrono::milliseconds( sleep_time ) );
 
-	bool redraw = false;
+	int redraw = 0;
 
 	while( SDL_PollEvent( &event ) ) {
 		DPR( print_event(event) );
 		basic_events( event, app );
-		redraw = pause_events( event, app );
+		redraw += (int)pause_events( event, app );
 	}
-	return redraw;
+	return (bool)redraw;
 }
 
 void Controls::hiddenEventLoop( Application & app, int sleep_time ) {
@@ -67,6 +67,7 @@ void Controls::hidden_events( SDL_Event & event, Application & app ) {
 			app.state( paused );
 }
 
+// handle one event during pause state
 bool Controls::pause_events( SDL_Event & event, Application & app ) {
 	bool toRedraw = false;
 	if( event.type == SDL_WINDOWEVENT ) {
