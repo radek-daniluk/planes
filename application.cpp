@@ -30,6 +30,8 @@ Application::Application( int width, int height, int debug, int fps ) {
 	ctrl = CtrlPtr( new Controls() );
 }
 
+SDL_Window* Application::win() const { return gfx->win(); }
+
 int Application::startMainLoop ( void ) {
 
 	if( loadGame("test/2.game") ) {

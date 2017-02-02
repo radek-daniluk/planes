@@ -37,6 +37,7 @@ class Application {
 	int startMainLoop ( void );
 	AppState state() const { return state_; }
 	void state( AppState newState ) { state_ = newState; }
+	SDL_Window* win() const;
 
 };
 
