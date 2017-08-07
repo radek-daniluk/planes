@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
 		s >> debug_app;
 	}
 	cout << "debug=" << debug_app << endl;
-	// if fps == 0 enable vsync
+	// get fps or enable vsync if fps==0
 	if (argc > 3) {
 		istringstream s( argv[3] );
 		s >> fps;
